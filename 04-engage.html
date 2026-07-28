@@ -170,6 +170,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
 .agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;}
 .agent details li{margin:2px 0;}
 .agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
+.motions.four{grid-template-columns:repeat(4,1fr);}@media(max-width:640px){.motions.four{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
@@ -201,6 +202,16 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
     </div>
   </div>
 
+
+  <div class="panel"><div class="hd">Engagement mode <span class="tag">1 of 4 · screen adapts to the chosen motion</span></div><div class="bd">
+    <div class="motions four">
+      <div class="mo"><b>Test drive</b><small>read-only look · no setup</small></div>
+      <div class="mo pick"><b>Own-data sandbox</b><small>you are here</small></div>
+      <div class="mo"><b>30-day trial</b><small>same screen + a countdown</small></div>
+      <div class="mo"><b>Direct purchase</b><small>skips Engage entirely</small></div>
+    </div>
+    <div class="note">This is the sandbox mode. A <b>trial</b> would add the clock back (days elapsed / expiry as the forcing-function). A <b>test drive</b> would be read-only sample data — nothing to set up or graduate. <b>Purchase</b> jumps straight to Migrate.</div>
+  </div></div>
 
   <div class="panel"><div class="hd">Sandbox setup &amp; graduation criteria</div><div class="bd">
     <div class="two">
