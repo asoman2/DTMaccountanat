@@ -146,6 +146,30 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
 .qn:last-child{border-bottom:none;}
 .qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
 
+
+/* ===== agent layer (context-aware, relevance-realization) ===== */
+.agent{border:1.5px solid #555;background:#f4f4f4;margin-bottom:14px;position:relative;}
+.agent::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:repeating-linear-gradient(#4a4a4a,#4a4a4a 3px,#6a6a6a 3px,#6a6a6a 6px);}
+.agent .a-hd{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#444;}
+.agent .glyph{font-size:13px;}
+.agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);letter-spacing:.05em;}
+.agent .a-bd{padding:10px 12px 10px 16px;}
+.agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;}
+.agent .insight b{background:#e2e2e2;padding:0 3px;}
+.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.agent .dots{display:flex;gap:3px;flex-wrap:wrap;}
+.agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;}
+.agent .dots i.lit{background:#4a4a4a;border-color:#333;}
+.agent .field small{font-size:10px;color:var(--soft);}
+.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);}
+.agent .chip.primary{background:#dcdcdc;}
+.agent .chip:hover{background:#e6e6e6;}
+.agent details{margin-top:8px;}
+.agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;letter-spacing:.03em;}
+.agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;}
+.agent details li{margin:2px 0;}
+.agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
 </style>
 </head>
 <body>
@@ -167,6 +191,16 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
 
   <h1>02 · Configure</h1>
   <div class="sub">Gates run first (any → IES, scoring skipped). If no gate fires, telemetry + accountant sliders produce a weighted composite. Seeded to land mid-QBOA — move things to test it.</div>
+  <div class="agent">
+    <div class="a-hd"><span class="glyph">◇</span> Agent · configure <span class="rr">relevance realized</span></div>
+    <div class="a-bd">
+      <div class="insight">No slider position you can reach crosses a gate. This is a <b>QBOA case, not a judgment case</b> — tuning won’t change the tier. You can stop.</div>
+      <div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>5 inputs → 0 gate-relevant</small></div>
+      <div class="a-act"><a class="chip primary" href="03-recommend.html">Lock as QBOA → Recommend</a><span class="chip">Force a gate question</span><details><summary>why?</summary><ul><li>Max composite reachable ≈ 64 even with every slider at 100 — still under the IES band.</li><li>All four gates are structurally false for a single entity.</li><li>So the only way to reach IES is new information, not re-weighting what’s here.</li></ul></details></div>
+      <div class="meta">The agent is telling you not to work. Comfortable with that? That’s the weight-lifting bargain.</div>
+    </div>
+  </div>
+
 
   <div class="two">
     <div>
