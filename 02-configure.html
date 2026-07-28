@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 · 02 Configure — Copperline</title>
+<style>
+/* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
+:root{
+  --ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;
+  --fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:#eee;color:var(--ink);font-family:"Courier New",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.45;}
+.sheet{max-width:1180px;margin:0 auto;padding:16px 18px 90px;}
+a{color:#333;}
+h1{font-size:16px;margin:0 0 2px;}
+h2{font-size:14px;margin:0 0 8px;}
+h3{font-size:12px;margin:0 0 6px;}
+.sub{color:var(--mid);font-size:11px;margin-bottom:14px;}
+
+/* wireframe banner */
+.wf-banner{border:1.5px dashed #7a7a7a;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#e7e7e7 10px,#e7e7e7 20px);padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+/* persistent customer strip */
+.custbar{border:1.5px solid var(--line);background:var(--fill2);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;}
+.custbar b{font-size:12px;}
+.custbar .meta span{margin-left:14px;color:var(--mid);}
+.custbar .meta b{color:#333;}
+
+/* breadcrumb */
+.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;}
+.crumb a{text-decoration:underline;cursor:pointer;}
+.crumb b{color:#000;}
+
+/* panels */
+.panel{background:var(--panel);border:1.5px solid var(--line);margin-bottom:14px;}
+.panel>.hd{background:var(--fill);border-bottom:1.5px solid var(--line);padding:7px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#444;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.panel>.bd{padding:12px;}
+.tag{font-size:9.5px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+.tag.lock{background:var(--lock);}
+.tag.input{background:#fff;border-style:dashed;}
+.note{font-size:10.5px;color:var(--mid);font-style:italic;margin-top:8px;}
+ul.tight{margin:4px 0;padding-left:18px;}
+ul.tight li{margin:2px 0;}
+
+/* buttons */
+button.wf,a.wf{display:inline-block;text-decoration:none;font-family:inherit;font-size:12px;border:1.5px solid #666;background:var(--fill);padding:8px 12px;cursor:pointer;color:var(--ink);}
+a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;}
+a.wf:hover,button.wf:hover{background:#e0e0e0;}
+select,input[type=date]{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;padding:5px 7px;color:var(--ink);}
+.pagenav{display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap;}
+
+/* KPI + bars */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;}
+.kpi .big{font-size:22px;font-weight:bold;}
+.kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
+.funnel .frow{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
+.fbar{height:16px;border:1px solid var(--line);background:var(--fill);}
+.fbar>i{display:block;height:100%;background:var(--band);}
+.split{display:flex;height:16px;border:1px solid var(--line);}
+.split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
+
+/* vertical cards */
+.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+@media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
+.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;cursor:pointer;text-decoration:none;color:var(--ink);display:block;}
+.vcard:hover{background:var(--fill2);border-color:#888;}
+.vcard.on{border:2px solid #555;background:var(--fill);}
+.vcard .cnt{font-size:20px;font-weight:bold;}
+.vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;}
+.vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;}
+.vcard .pbar>i{display:block;height:100%;background:var(--band);}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
+th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
+tr.click{cursor:pointer;}
+tr.click:hover td{background:var(--fill2);}
+tr.click a{text-decoration:none;color:var(--ink);}
+.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;}
+.pill.dark{background:#dcdcdc;}
+.status{font-size:10px;border:1px solid var(--soft);padding:1px 5px;white-space:nowrap;}
+
+/* stepper */
+.steps{display:flex;flex-wrap:wrap;margin-bottom:14px;}
+.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);}
+.step+.step{border-left:none;}
+.step .n{font-size:10px;color:var(--soft);}
+.step .l{font-size:12px;}
+.step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;}
+.step.on .l{font-weight:bold;}
+.step.done .n::after{content:" ✓";color:#555;}
+.step:hover{background:#e6e6e6;}
+
+/* generic rows */
+.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;}
+.telrow:last-child{border-bottom:none;}
+.telrow .k small{display:block;color:var(--soft);font-size:10px;}
+.telrow .v{font-weight:bold;text-align:right;}
+.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;}
+.bar>i{display:block;height:100%;background:var(--band);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:800px){.two{grid-template-columns:1fr;}}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;}
+.chk:last-child{border-bottom:none;}
+.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;}
+.chk .b.on{background:#cfcfcf;}
+
+/* gates + sliders (configure) */
+.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);}
+.gate:last-child{border-bottom:none;}
+.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;}
+.gate .box.on{background:#cfcfcf;}
+.gate small{color:var(--mid);display:block;font-size:10.5px;}
+.slrow{padding:8px 0;border-bottom:1px dotted var(--line);}
+.slrow:last-child{border-bottom:none;}
+.slhd{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--fill);border:1px solid var(--line);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;border-radius:0;}
+.slnote{font-size:10px;color:var(--soft);margin-top:2px;}
+
+/* output */
+.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;}
+.reco .tier{font-size:20px;font-weight:bold;}
+.reco .conf{font-size:11px;color:var(--mid);}
+.track{position:relative;height:24px;border:1.5px solid var(--line);background:linear-gradient(90deg,#fbfbfb,#e6e6e6);margin:4px 0 8px;}
+.seg{position:absolute;top:0;bottom:0;border-right:1px dashed var(--soft);font-size:9px;color:var(--soft);padding:2px 4px;}
+.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;}
+.marker::after{content:"▲";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
+.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+@media(max-width:520px){.motions{grid-template-columns:1fr;}}
+.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;}
+.mo b{display:block;margin-bottom:3px;}
+.mo.pick{border:2px solid #555;background:#e4e4e4;}
+.mo small{color:var(--mid);font-size:10px;}
+
+/* debate */
+.debate{border:1.5px solid #888;background:#f2f2f2;}
+.debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
+.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;}
+.qn:last-child{border-bottom:none;}
+.qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
+
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 3 / 6 · 02 Configure</span></div>
+
+  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span>
+    <span class="meta"><span>current fit: <b>QBOA</b></span><span>stage: <b>Configure</b></span></span></div>
+
+  <div class="crumb"><a href="index.html">Book overview</a> ▸ <a href="index.html#construction">Construction</a> ▸ <b>Copperline Contracting Co.</b></div>
+
+  <div class="steps">
+    <a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a>
+    <a class="step on" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a>
+    <a class="step" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a>
+    <a class="step" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a>
+    <a class="step" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a>
+  </div>
+
+  <h1>02 · Configure</h1>
+  <div class="sub">Gates run first (any → IES, scoring skipped). If no gate fires, telemetry + accountant sliders produce a weighted composite. Seeded to land mid-QBOA — move things to test it.</div>
+
+  <div class="two">
+    <div>
+      <div class="panel"><div class="hd">Stage 1 · Gates <span class="tag input">any YES → IES</span></div><div class="bd">
+        <div class="gate"><div class="box" data-gate></div><div>Multiple entities need consolidation<small>none — single LLC</small></div></div>
+        <div class="gate"><div class="box" data-gate></div><div>3+ simultaneous dimensions<small>class + division is enough</small></div></div>
+        <div class="gate"><div class="box" data-gate></div><div>Rev-rec / audit close / statutory<small>not applicable</small></div></div>
+        <div class="gate"><div class="box" data-gate></div><div>Bolt-on stack acts as an ERP to retire<small>only 2 light apps</small></div></div>
+      </div></div>
+      <div class="panel"><div class="hd">Telemetry feeding the score <span class="tag lock">read-only</span></div><div class="bd">
+        <div class="telrow"><div class="k">Seat pressure (4/5)</div><div class="v">55</div></div>
+        <div class="telrow"><div class="k">Volume (~1,800/mo)</div><div class="v">55</div></div>
+        <div class="telrow"><div class="k">Integration + reporting (2 apps · 8 reports)</div><div class="v">40</div></div>
+      </div></div>
+      <div class="panel"><div class="hd">Accountant discovery <span class="tag input">slider</span></div><div class="bd" id="sliders">
+        <div class="slrow" data-w="0.20"><div class="slhd"><span>Dimensionality need</span><b><span class="out">45</span></b></div><input type="range" min="0" max="100" value="45"><div class="slnote">division P&amp;L, not job×phase×entity</div></div>
+        <div class="slrow" data-w="0.20"><div class="slhd"><span>Operational depth</span><b><span class="out">55</span></b></div><input type="range" min="0" max="100" value="55"><div class="slnote">job costing yes; progress billing light</div></div>
+        <div class="slrow" data-w="0"><div class="slhd"><span>Growth trajectory</span><b><span class="out">50</span></b></div><input type="range" min="0" max="100" value="50"><div class="slnote">feeds confidence only</div></div>
+      </div></div>
+    </div>
+
+    <div>
+      <div class="panel"><div class="hd">Output <span class="tag" id="gatestate">no gate fired</span></div><div class="bd">
+        <div class="track" id="track">
+          <div class="seg" style="left:0;width:40%;">QBO 0–40</div>
+          <div class="seg" style="left:40%;width:25%;">QBOA 40–64</div>
+          <div class="seg" style="left:65%;width:15%;">judge</div>
+          <div class="seg" style="left:80%;width:20%;">IES</div>
+          <div class="marker" id="marker" style="left:52%;"></div>
+        </div>
+        <div class="reco"><div class="tier" id="tier">QBOA</div><div class="conf">composite <b id="score">52</b>/100 · confidence <b id="conf">medium ~65%</b></div></div>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);">Contributing factors</div>
+        <ul class="tight" id="why" style="font-size:11px;"></ul>
+        <div class="note">Weights: seats .30 · volume .20 · dimensionality .20 · operational .20 · integ+reporting .10. Growth is intentionally excluded from the composite (debate).</div>
+      </div></div>
+      <div class="panel debate"><div class="hd">Debate · Configure</div><div class="bd">
+        <div class="qn"><b>gate vs. score</b>Should near-cap seats alone nudge tier, or is that a seat-upsell first?</div>
+        <div class="qn"><b>soft factors</b>Growth &amp; stack-retirement move confidence but not the composite. Right call?</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="pagenav"><a class="wf alt" href="01-profile.html">← 01 Profile</a><a class="wf" href="03-recommend.html">Continue to 03 Recommend →</a></div>
+</div>
+
+<script>
+(function(){
+  var TEL={userNeed:55,volume:55,integrationReporting:40};
+  var W={userNeed:0.30,volume:0.20,dimensionality:0.20,operational:0.20,integrationReporting:0.10};
+  var sliders=[].slice.call(document.querySelectorAll('#sliders .slrow'));
+  var gates=[].slice.call(document.querySelectorAll('[data-gate]'));
+  function sv(i){return +sliders[i].querySelector('input').value;}
+  function anyGate(){return gates.some(function(g){return g.classList.contains('on');});}
+  function compute(){
+    var dim=sv(0),op=sv(1),gate=anyGate();
+    var c=Math.round(TEL.userNeed*W.userNeed+TEL.volume*W.volume+dim*W.dimensionality+op*W.operational+TEL.integrationReporting*W.integrationReporting);
+    var tier,conf;
+    if(gate){tier='IES';conf='high (gate)';}
+    else if(c<40){tier='QBO';conf='medium';}
+    else if(c<65){tier='QBOA';conf='medium ~65%';}
+    else if(c<=80){tier='QBOA-max ↔ IES';conf='low ~55%';}
+    else {tier='IES (lean)';conf='low ~58%';}
+    document.getElementById('score').textContent=gate?'—':c;
+    document.getElementById('tier').textContent=tier;
+    document.getElementById('conf').textContent=conf;
+    document.getElementById('gatestate').textContent=gate?'GATE FIRED → IES':'no gate fired';
+    document.getElementById('marker').style.left=(gate?96:c)+'%';
+    var why=document.getElementById('why');why.innerHTML='';
+    [['Seats 4/5 — moderate',TEL.userNeed>=50],['Dimensionality '+dim+' — division-level only',dim<60],['Operational '+op+' — job costing, light billing',op>=45],['Only 2 integrations — low migration risk',true],['No multi-entity gate',!gate]].forEach(function(r){var li=document.createElement('li');li.textContent=(r[1]?'▲ ':'▽ ')+r[0];why.appendChild(li);});
+  }
+  document.querySelectorAll('#sliders input').forEach(function(inp,i){inp.addEventListener('input',function(){sliders[i].querySelector('.out').textContent=inp.value;compute();});});
+  gates.forEach(function(g){g.addEventListener('click',function(){g.classList.toggle('on');g.textContent=g.classList.contains('on')?'✕':'';compute();});});
+  compute();
+})();
+</script>
+</body>
+</html>
