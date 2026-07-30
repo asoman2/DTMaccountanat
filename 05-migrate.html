@@ -1,251 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6 · 05 Migrate — Copperline</title>
-<style>
-/* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
-:root{
-  --ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;
-  --fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;
-}
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>6 · 05 Migrate</title><style>
+:root{--ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;--fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;}
 *{box-sizing:border-box;}
 body{margin:0;background:#eee;color:var(--ink);font-family:"Courier New",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.45;}
 .sheet{max-width:1180px;margin:0 auto;padding:16px 18px 90px;}
-a{color:#333;}
-h1{font-size:16px;margin:0 0 2px;}
-h2{font-size:14px;margin:0 0 8px;}
-h3{font-size:12px;margin:0 0 6px;}
-.sub{color:var(--mid);font-size:11px;margin-bottom:14px;}
-
-/* wireframe banner */
+a{color:#333;} h1{font-size:16px;margin:0 0 2px;} h3{font-size:12px;margin:0 0 6px;}
+.sub{color:var(--mid);font-size:11px;margin-bottom:12px;}
 .wf-banner{border:1.5px dashed #7a7a7a;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#e7e7e7 10px,#e7e7e7 20px);padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-
-/* persistent customer strip */
 .custbar{border:1.5px solid var(--line);background:var(--fill2);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;}
-.custbar b{font-size:12px;}
-.custbar .meta span{margin-left:14px;color:var(--mid);}
-.custbar .meta b{color:#333;}
-
-/* breadcrumb */
-.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;}
-.crumb a{text-decoration:underline;cursor:pointer;}
-.crumb b{color:#000;}
-
-/* panels */
+.custbar b{font-size:12px;} .custbar .meta span{margin-left:14px;color:var(--mid);} .custbar .meta b{color:#333;}
+.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;} .crumb a{text-decoration:underline;} .crumb b{color:#000;}
 .panel{background:var(--panel);border:1.5px solid var(--line);margin-bottom:14px;}
 .panel>.hd{background:var(--fill);border-bottom:1.5px solid var(--line);padding:7px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#444;display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .panel>.bd{padding:12px;}
 .tag{font-size:9.5px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
-.tag.lock{background:var(--lock);}
-.tag.input{background:#fff;border-style:dashed;}
+.tag.lock{background:var(--lock);} .tag.input{background:#fff;border-style:dashed;}
 .note{font-size:10.5px;color:var(--mid);font-style:italic;margin-top:8px;}
-ul.tight{margin:4px 0;padding-left:18px;}
-ul.tight li{margin:2px 0;}
-
-/* buttons */
+ul.tight{margin:4px 0;padding-left:18px;} ul.tight li{margin:2px 0;}
 button.wf,a.wf{display:inline-block;text-decoration:none;font-family:inherit;font-size:12px;border:1.5px solid #666;background:var(--fill);padding:8px 12px;cursor:pointer;color:var(--ink);}
-a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;}
-a.wf:hover,button.wf:hover{background:#e0e0e0;}
+a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;} a.wf:hover,button.wf:hover{background:#e0e0e0;}
 select,input[type=date]{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;padding:5px 7px;color:var(--ink);}
 .pagenav{display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap;}
-
-/* KPI + bars */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
-.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;}
-.kpi .big{font-size:22px;font-weight:bold;}
-.kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
-.funnel .frow{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
-.fbar{height:16px;border:1px solid var(--line);background:var(--fill);}
-.fbar>i{display:block;height:100%;background:var(--band);}
-.split{display:flex;height:16px;border:1px solid var(--line);}
-.split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
-
-/* vertical cards */
-.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
-.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;cursor:pointer;text-decoration:none;color:var(--ink);display:block;}
-.vcard:hover{background:var(--fill2);border-color:#888;}
-.vcard.on{border:2px solid #555;background:var(--fill);}
-.vcard .cnt{font-size:20px;font-weight:bold;}
-.vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;}
-.vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;}
-.vcard .pbar>i{display:block;height:100%;background:var(--band);}
-
-/* tables */
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
-th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
-tr.click{cursor:pointer;}
-tr.click:hover td{background:var(--fill2);}
-tr.click a{text-decoration:none;color:var(--ink);}
-.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;}
-.pill.dark{background:#dcdcdc;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;} .kpi .big{font-size:22px;font-weight:bold;} .kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
+.funnel .frow{display:grid;grid-template-columns:130px 1fr 96px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
+.fbar{height:16px;border:1px solid var(--line);background:var(--fill);} .fbar>i{display:block;height:100%;background:var(--band);}
+.split{display:flex;height:16px;border:1px solid var(--line);} .split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
+.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
+.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;text-decoration:none;color:var(--ink);display:block;} .vcard:hover{background:var(--fill2);border-color:#888;} .vcard.on{border:2px solid #555;background:var(--fill);}
+.vcard .cnt{font-size:20px;font-weight:bold;} .vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;} .vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;} .vcard .pbar>i{display:block;height:100%;background:var(--band);}
+table{width:100%;border-collapse:collapse;font-size:12px;} th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;} th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
+tr.click{cursor:pointer;} tr.click:hover td{background:var(--fill2);} tr.click a{text-decoration:none;color:var(--ink);}
+.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;} .pill.dark{background:#dcdcdc;}
 .status{font-size:10px;border:1px solid var(--soft);padding:1px 5px;white-space:nowrap;}
-
-/* stepper */
 .steps{display:flex;flex-wrap:wrap;margin-bottom:14px;}
-.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);}
-.step+.step{border-left:none;}
-.step .n{font-size:10px;color:var(--soft);}
-.step .l{font-size:12px;}
-.step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;}
-.step.on .l{font-weight:bold;}
-.step.done .n::after{content:" ✓";color:#555;}
-.step:hover{background:#e6e6e6;}
-
-/* generic rows */
-.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;}
-.telrow:last-child{border-bottom:none;}
-.telrow .k small{display:block;color:var(--soft);font-size:10px;}
-.telrow .v{font-weight:bold;text-align:right;}
-.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;}
-.bar>i{display:block;height:100%;background:var(--band);}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:800px){.two{grid-template-columns:1fr;}}
-.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;}
-.chk:last-child{border-bottom:none;}
-.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;}
-.chk .b.on{background:#cfcfcf;}
-
-/* gates + sliders (configure) */
-.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);}
-.gate:last-child{border-bottom:none;}
-.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;}
-.gate .box.on{background:#cfcfcf;}
-.gate small{color:var(--mid);display:block;font-size:10.5px;}
-.slrow{padding:8px 0;border-bottom:1px dotted var(--line);}
-.slrow:last-child{border-bottom:none;}
+.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);} .step+.step{border-left:none;}
+.step .n{font-size:10px;color:var(--soft);} .step .l{font-size:12px;} .step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;} .step.on .l{font-weight:bold;} .step.done .n::after{content:" \2713";color:#555;} .step:hover{background:#e6e6e6;}
+.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;} .telrow:last-child{border-bottom:none;}
+.telrow .k small{display:block;color:var(--soft);font-size:10px;} .telrow .v{font-weight:bold;text-align:right;}
+.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;} .bar>i{display:block;height:100%;background:var(--band);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;} @media(max-width:800px){.two{grid-template-columns:1fr;}}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;} .chk:last-child{border-bottom:none;}
+.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;} .chk .b.on{background:#cfcfcf;}
+.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);} .gate:last-child{border-bottom:none;}
+.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;} .gate .box.on{background:#cfcfcf;} .gate small{color:var(--mid);display:block;font-size:10.5px;}
+.slrow{padding:8px 0;border-bottom:1px dotted var(--line);} .slrow:last-child{border-bottom:none;}
 .slhd{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--fill);border:1px solid var(--line);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;}
 input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;border-radius:0;}
 .slnote{font-size:10px;color:var(--soft);margin-top:2px;}
-
-/* output */
-.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;}
-.reco .tier{font-size:20px;font-weight:bold;}
-.reco .conf{font-size:11px;color:var(--mid);}
+.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;} .reco .tier{font-size:20px;font-weight:bold;} .reco .conf{font-size:11px;color:var(--mid);}
 .track{position:relative;height:24px;border:1.5px solid var(--line);background:linear-gradient(90deg,#fbfbfb,#e6e6e6);margin:4px 0 8px;}
 .seg{position:absolute;top:0;bottom:0;border-right:1px dashed var(--soft);font-size:9px;color:var(--soft);padding:2px 4px;}
-.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;}
-.marker::after{content:"▲";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
-.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-@media(max-width:520px){.motions{grid-template-columns:1fr;}}
-.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;}
-.mo b{display:block;margin-bottom:3px;}
-.mo.pick{border:2px solid #555;background:#e4e4e4;}
-.mo small{color:var(--mid);font-size:10px;}
-
-/* debate */
-.debate{border:1.5px solid #888;background:#f2f2f2;}
-.debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
-.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;}
-.qn:last-child{border-bottom:none;}
-.qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
-
-
-/* ===== agent layer (context-aware, relevance-realization) ===== */
+.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;} .marker::after{content:"\25b2";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
+.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;} .motions.five{grid-template-columns:repeat(5,1fr);} .motions.four{grid-template-columns:repeat(4,1fr);}
+@media(max-width:680px){.motions,.motions.five,.motions.four{grid-template-columns:1fr 1fr;}}
+.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;} .mo b{display:block;margin-bottom:3px;} .mo.pick{border:2px solid #555;background:#e4e4e4;} .mo small{color:var(--mid);font-size:10px;}
+.debate{border:1.5px solid #888;background:#f2f2f2;} .debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
+.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;} .qn:last-child{border-bottom:none;} .qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
 .agent{border:1.5px solid #555;background:#f4f4f4;margin-bottom:14px;position:relative;}
 .agent::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:repeating-linear-gradient(#4a4a4a,#4a4a4a 3px,#6a6a6a 3px,#6a6a6a 6px);}
 .agent .a-hd{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#444;}
-.agent .glyph{font-size:13px;}
-.agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);letter-spacing:.05em;}
-.agent .a-bd{padding:10px 12px 10px 16px;}
-.agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;}
-.agent .insight b{background:#e2e2e2;padding:0 3px;}
-.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-.agent .dots{display:flex;gap:3px;flex-wrap:wrap;}
-.agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;}
-.agent .dots i.lit{background:#4a4a4a;border-color:#333;}
-.agent .field small{font-size:10px;color:var(--soft);}
-.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-.agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);}
-.agent .chip.primary{background:#dcdcdc;}
-.agent .chip:hover{background:#e6e6e6;}
-.agent details{margin-top:8px;}
-.agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;letter-spacing:.03em;}
-.agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;}
-.agent details li{margin:2px 0;}
-.agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
-</style>
-</head>
-<body>
+.agent .glyph{font-size:13px;} .agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);}
+.agent .a-bd{padding:10px 12px 10px 16px;} .agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;} .agent .insight b{background:#e2e2e2;padding:0 3px;}
+.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;} .agent .dots{display:flex;gap:3px;flex-wrap:wrap;} .agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;} .agent .dots i.lit{background:#4a4a4a;border-color:#333;} .agent .field small{font-size:10px;color:var(--soft);}
+.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);} .agent .chip.primary{background:#dcdcdc;}
+.agent details{margin-top:8px;} .agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;} .agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;} .agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
+.rc{font-size:9px;border:1px solid #777;padding:0 5px;border-radius:9px;letter-spacing:.04em;white-space:nowrap;} .rc.biz{background:#4a4a4a;color:#fff;border-color:#333;} .rc.acc{background:#fff;color:#333;} .rc.adv{background:#fff;border-style:dashed;color:#555;}
+.collab{border:1.5px solid var(--line);background:#fafafa;padding:8px 12px;margin-bottom:12px;font-size:11px;} .collab .c-parties{display:flex;gap:16px;flex-wrap:wrap;margin:5px 0;} .collab .party{display:flex;gap:6px;align-items:center;color:var(--mid);} .collab .c-now{border-top:1px dotted var(--line);padding-top:5px;color:#333;}
+.own{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dotted var(--line);font-size:11.5px;} .own:last-child{border-bottom:none;} .own .lbl{flex:1;}
+.st{font-size:9px;border:1px solid var(--soft);padding:0 5px;white-space:nowrap;} .st.done{background:#dcdcdc;} .st.prog{background:#efefef;} .st.block{background:#fff;border-style:dashed;border-color:#555;color:#333;}
+.log{display:grid;grid-template-columns:46px auto 1fr;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dotted var(--line);font-size:11px;} .log:last-child{border-bottom:none;} .log .t{color:var(--soft);font-size:10px;}
+</style></head><body>
 <div class="sheet">
-  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 6 / 6 · 05 Migrate</span></div>
-
-  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span>
-    <span class="meta"><span>tier: <b>QBOA</b> (sandbox graduated)</span><span>stage: <b>Migrate</b></span></span></div>
-
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 6 / 6</span></div>
+  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span><span class="meta"><span>fit: <b>QBOA</b></span><span>step: <b>Migrate</b></span></span></div>
   <div class="crumb"><a href="index.html">Book overview</a> ▸ <a href="index.html#construction">Construction</a> ▸ <b>Copperline Contracting Co.</b></div>
-
-  <div class="steps">
-    <a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a>
-    <a class="step done" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a>
-    <a class="step done" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a>
-    <a class="step done" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a>
-    <a class="step on" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a>
-  </div>
-
+  <div class="collab"><div><b>Tri-party record</b> · contextual to this step</div><div class="c-parties"><span class="party"><span class="rc biz">BIZ</span> Copperline — D. Reyes, controller</span><span class="party"><span class="rc acc">ACC</span> You — ProAdvisor</span><span class="party"><span class="rc adv">ADV</span> Intuit migration advisor</span></div><div class="c-now">Now: <b>BIZ</b> to approve entry freeze · <b>ACC</b> to confirm class mapping · <b>ADV</b> runs delta-sync + promotion</div></div>
+  <div class="steps"><a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a><a class="step done" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a><a class="step done" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a><a class="step done" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a><a class="step on" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a></div>
   <h1>05 · Migrate</h1>
-  <div class="sub">Copperline came via the <b>own-data sandbox</b>, so the validated environment <b>is</b> the migration — graduate = promote to live, no second import; cutover is a delta-sync + flip. (A 30-day trial would re-import here; a test drive never touched real data.)</div>
-  <div class="agent">
-    <div class="a-hd"><span class="glyph">◇</span> Agent · migrate <span class="rr">relevance realized</span></div>
-    <div class="a-bd">
-      <div class="insight">The sandbox already staged seven of eight lines — no re-import. Two decisions remain: <b>history scope</b>, and reconciling the <b>QBDT delta</b> since hydrate.</div>
-      <div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>40 items staged in sandbox → 2 open decisions</small></div>
-      <div class="a-act"><span class="chip primary">Apply summarized + referenced</span><span class="chip">Flag attachments to client</span><details><summary>why?</summary><ul><li>Portable items auto-resolved to “ports clean.”</li><li>Attachments + memorized txns flagged “won’t carry” — client told up front.</li><li>History scope is the lone judgment call: no clean right answer, so it’s left to you.</li></ul></details></div>
-      <div class="meta">The agent resolved 39 of 40. The one it left is the one with no clean answer — by design, or by convenience?</div>
-    </div>
-  </div>
-
-
-  <div class="panel"><div class="hd">Migration readiness</div><div class="bd">
-    <table>
-      <thead><tr><th>What</th><th>Handling</th><th>Note</th></tr></thead>
-      <tbody>
-        <tr><td>Chart of accounts</td><td><span class="status">ports clean</span></td><td>direct map</td></tr>
-        <tr><td>Customers : Jobs</td><td><span class="status">ports clean</span></td><td>→ Customers + Projects</td></tr>
-        <tr><td>Class list (3 divisions)</td><td><span class="status">needs mapping</span></td><td>confirm class vs. tag</td></tr>
-        <tr><td>Open transactions</td><td><span class="status">ports clean</span></td><td>AR / AP balances</td></tr>
-        <tr><td>Historic transactions</td><td><span class="status">decide scope</span></td><td>full vs. summarized (see note)</td></tr>
-        <tr><td>8 custom reports</td><td><span class="status">manual rebuild</span></td><td>1 WIP report = the trial blocker</td></tr>
-        <tr><td>QB Time · Payments app</td><td><span class="status">needs mapping</span></td><td>reconnect + re-auth in prod</td></tr>
-        <tr><td>Attachments / memorized txns</td><td><span class="status">won't carry over</span></td><td>flag to customer up front</td></tr>
-      </tbody>
-    </table>
-    <div class="note">Because this is the graduated sandbox, "ports clean" means <b>already staged &amp; reconciled</b> in the sandbox — cutover promotes it, doesn’t re-import it. "Decide scope" on history stays the collectible-vs-historic call.</div>
-  </div></div>
-
-  <div class="two">
-    <div class="panel"><div class="hd">Cutover checklist</div><div class="bd">
-      <div class="chk"><div class="b on">✓</div>Freeze QBDT entry window agreed</div>
-      <div class="chk"><div class="b on">✓</div>Final backup of desktop file</div>
-      <div class="chk"><div class="b">□</div>Delta-sync QBDT activity since sandbox hydrate</div>
-      <div class="chk"><div class="b">□</div>Promote sandbox → production (already tied out)</div>
-      <div class="chk"><div class="b">□</div>Reconnect integrations in prod</div>
-      <div class="chk"><div class="b">□</div>Rebuild WIP report / sign off substitute</div>
-      <div class="chk"><div class="b">□</div>Go-live sign-off</div>
-    </div></div>
-    <div class="panel"><div class="hd">Cutover + follow-up</div><div class="bd">
-      <div class="telrow"><div class="k">Planned cutover</div><div class="v">next month-end</div></div>
-      <div class="telrow"><div class="k">Parallel run</div><div class="v">1 pay cycle</div></div>
-      <div class="telrow"><div class="k">Rollback window</div><div class="v">desktop kept read-only 60d</div></div>
-      <div class="telrow"><div class="k">Day-30 adoption check</div><div class="v">scheduled</div></div>
-      <div class="note">Follow-up is part of the journey, not the end of it — the adoption dip at day 15–20 is the usual churn risk.</div>
-    </div></div>
-  </div>
-
-  <div class="panel debate"><div class="hd">Debate · Migrate</div><div class="bd">
-    <div class="qn"><b>handoff</b>Does the accountant run migration, or hand to a specialist at convert? Where's the seam?</div>
-    <div class="qn"><b>history scope</b>Full history feels safe but bloats + slows migration. Default to summarized + referenced?</div>
-    <div class="qn"><b>reversibility</b>What exactly is the rollback if go-live fails after the QBDT freeze?</div>
-    <div class="qn"><b>the delta problem</b>If the sandbox was hydrated weeks ago, QBDT kept moving. Promoting the sandbox means reconciling that drift — is delta-sync trustworthy, or does it force a fresh cutover copy anyway?</div>
-  </div></div>
-
+  <div class="sub">Copperline came via the <b>own-data sandbox</b>, so the validated environment <b>is</b> the migration — graduate = promote to live, no second import. Cutover = delta-sync + flip. Each line has a named owner.</div>
+  <div class="agent"><div class="a-hd"><span class="glyph">◇</span> Agent · migrate <span class="rr">relevance realized</span></div><div class="a-bd"><div class="insight">The sandbox already staged seven of eight lines. Two decisions remain — <b>history scope</b> and reconciling the <b>QBDT delta</b> since hydrate — and both are owned. Nothing else needs you.</div><div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i></span><small>40 items staged → 2 open decisions</small></div><div class="a-act"><span class="chip primary">Apply summarized + referenced</span><span class="chip">Assign delta-sync to ADV</span><details><summary>why?</summary><ul><li>Portable items auto-resolved to “ports clean.”</li><li>Attachments + memorized txns flagged “won’t carry.”</li><li>History scope + delta are the only judgment calls left.</li></ul></details></div><div class="meta">Agent resolved 38 of 40; the two it left have no clean answer — by design, or convenience?</div></div></div>
+  <div class="panel"><div class="hd">Who’s on point · audit trail <span class="tag">real-time ownership</span></div><div class="bd"><div class="two"><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;">Open items — who owns what now</div><div class="own"><span class="rc biz">BIZ</span><span class="lbl">Approve QBDT entry freeze</span><span class="st block">open</span></div><div class="own"><span class="rc acc">ACC</span><span class="lbl">Confirm class → tag mapping</span><span class="st block">open</span></div><div class="own"><span class="rc adv">ADV</span><span class="lbl">Delta-sync + promote sandbox</span><span class="st done">scheduled</span></div></div><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;">Audit log — this step</div><div class="log"><span class="t">d10</span><span class="rc adv">ADV</span><span>sandbox graduated → staged prod copy</span></div><div class="log"><span class="t">d10</span><span class="rc adv">ADV</span><span>final QBDT backup taken</span></div><div class="log"><span class="t">d11</span><span class="rc acc">ACC</span><span>cutover scheduled month-end</span></div><div class="log"><span class="t">—</span><span class="rc biz">BIZ</span><span>freeze approval pending</span></div></div></div><div class="note">Every action is attributed + timestamped; all three parties see one shared record. This is a slice of the full immutable trail.</div></div></div>
+  <div class="panel"><div class="hd">Migration readiness <span class="tag">owner per line</span></div><div class="bd"><table><thead><tr><th>What</th><th>Owner</th><th>Handling</th><th>Note</th></tr></thead><tbody><tr><td>Chart of accounts</td><td><span class="rc adv">ADV</span></td><td><span class="status">ports clean</span></td><td>direct map</td></tr><tr><td>Customers : Jobs</td><td><span class="rc adv">ADV</span></td><td><span class="status">ports clean</span></td><td>→ Customers + Projects</td></tr><tr><td>Class list (3 divisions)</td><td><span class="rc acc">ACC</span></td><td><span class="status">needs mapping</span></td><td>confirm class vs. tag</td></tr><tr><td>Open transactions</td><td><span class="rc adv">ADV</span></td><td><span class="status">ports clean</span></td><td>AR / AP balances</td></tr><tr><td>Historic transactions</td><td><span class="rc acc">ACC</span></td><td><span class="status">decide scope</span></td><td>full vs. summarized</td></tr><tr><td>8 custom reports</td><td><span class="rc acc">ACC</span></td><td><span class="status">manual rebuild</span></td><td>1 WIP = the peer blocker</td></tr><tr><td>QB Time · Payments</td><td><span class="rc adv">ADV</span></td><td><span class="status">needs mapping</span></td><td>reconnect + re-auth</td></tr><tr><td>Attachments / memorized</td><td><span class="rc biz">BIZ</span></td><td><span class="status">won’t carry over</span></td><td>BIZ told up front</td></tr><tr><td>QBDT delta since hydrate</td><td><span class="rc adv">ADV</span></td><td><span class="status">reconcile</span></td><td>drift while sandbox ran</td></tr></tbody></table><div class="note">"Ports clean" here means <b>already staged &amp; reconciled in the sandbox</b> — cutover promotes it, doesn’t re-import. The owner column is the "who is taking care of what," live.</div></div></div>
+  <div class="two"><div class="panel"><div class="hd">Cutover checklist <span class="tag">owners</span></div><div class="bd"><div class="chk"><div class="b on">✓</div><span class="rc biz">BIZ</span>&nbsp;Entry-freeze window agreed</div><div class="chk"><div class="b on">✓</div><span class="rc adv">ADV</span>&nbsp;Final QBDT backup</div><div class="chk"><div class="b">□</div><span class="rc adv">ADV</span>&nbsp;Delta-sync activity since hydrate</div><div class="chk"><div class="b">□</div><span class="rc adv">ADV</span>&nbsp;Promote sandbox → production</div><div class="chk"><div class="b">□</div><span class="rc acc">ACC</span>&nbsp;Sign off WIP report substitute</div><div class="chk"><div class="b">□</div><span class="rc biz">BIZ</span>&nbsp;Go-live sign-off</div></div></div><div class="panel"><div class="hd">Cutover + follow-up</div><div class="bd"><div class="telrow"><div class="k">Planned cutover</div><div class="v">next month-end</div></div><div class="telrow"><div class="k">Parallel run</div><div class="v">1 pay cycle</div></div><div class="telrow"><div class="k">Rollback window</div><div class="v">desktop kept read-only 60d</div></div><div class="telrow"><div class="k">Day-30 adoption check</div><div class="v">scheduled · ACC + ADV</div></div><div class="note">Follow-up is part of the journey — the adoption dip at day 15–20 is the usual churn risk, and the trail shows who owns the check-in.</div></div></div></div>
+  <div class="panel debate"><div class="hd">Open questions for debate</div><div class="bd"><div class="qn"><b>handoff seam</b>Ownership is split BIZ/ACC/ADV per line. Is that clarity, or diffusion where everyone assumes someone else has it?</div><div class="qn"><b>the delta problem</b>Sandbox hydrated weeks ago; QBDT kept moving. Is delta-sync trustworthy, or does promotion force a fresh cutover copy anyway?</div><div class="qn"><b>audit permanence</b>The trail is shared + immutable. Does BIZ get to see every ADV/ACC note, or are there private lanes — and who decides?</div></div></div>
   <div class="pagenav"><a class="wf alt" href="04-engage.html">← 04 Engage</a><a class="wf" href="index.html">Done → back to book overview</a></div>
 </div>
-</body>
-</html>
+</body></html>

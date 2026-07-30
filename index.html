@@ -1,250 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1 · Portfolio Dashboard — Profiler Journey</title>
-<style>
-/* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
-:root{
-  --ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;
-  --fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;
-}
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>1 · Portfolio Dashboard</title><style>
+:root{--ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;--fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;}
 *{box-sizing:border-box;}
 body{margin:0;background:#eee;color:var(--ink);font-family:"Courier New",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.45;}
 .sheet{max-width:1180px;margin:0 auto;padding:16px 18px 90px;}
-a{color:#333;}
-h1{font-size:16px;margin:0 0 2px;}
-h2{font-size:14px;margin:0 0 8px;}
-h3{font-size:12px;margin:0 0 6px;}
-.sub{color:var(--mid);font-size:11px;margin-bottom:14px;}
-
-/* wireframe banner */
+a{color:#333;} h1{font-size:16px;margin:0 0 2px;} h3{font-size:12px;margin:0 0 6px;}
+.sub{color:var(--mid);font-size:11px;margin-bottom:12px;}
 .wf-banner{border:1.5px dashed #7a7a7a;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#e7e7e7 10px,#e7e7e7 20px);padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-
-/* persistent customer strip */
 .custbar{border:1.5px solid var(--line);background:var(--fill2);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;}
-.custbar b{font-size:12px;}
-.custbar .meta span{margin-left:14px;color:var(--mid);}
-.custbar .meta b{color:#333;}
-
-/* breadcrumb */
-.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;}
-.crumb a{text-decoration:underline;cursor:pointer;}
-.crumb b{color:#000;}
-
-/* panels */
+.custbar b{font-size:12px;} .custbar .meta span{margin-left:14px;color:var(--mid);} .custbar .meta b{color:#333;}
+.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;} .crumb a{text-decoration:underline;} .crumb b{color:#000;}
 .panel{background:var(--panel);border:1.5px solid var(--line);margin-bottom:14px;}
 .panel>.hd{background:var(--fill);border-bottom:1.5px solid var(--line);padding:7px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#444;display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .panel>.bd{padding:12px;}
 .tag{font-size:9.5px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
-.tag.lock{background:var(--lock);}
-.tag.input{background:#fff;border-style:dashed;}
+.tag.lock{background:var(--lock);} .tag.input{background:#fff;border-style:dashed;}
 .note{font-size:10.5px;color:var(--mid);font-style:italic;margin-top:8px;}
-ul.tight{margin:4px 0;padding-left:18px;}
-ul.tight li{margin:2px 0;}
-
-/* buttons */
+ul.tight{margin:4px 0;padding-left:18px;} ul.tight li{margin:2px 0;}
 button.wf,a.wf{display:inline-block;text-decoration:none;font-family:inherit;font-size:12px;border:1.5px solid #666;background:var(--fill);padding:8px 12px;cursor:pointer;color:var(--ink);}
-a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;}
-a.wf:hover,button.wf:hover{background:#e0e0e0;}
+a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;} a.wf:hover,button.wf:hover{background:#e0e0e0;}
 select,input[type=date]{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;padding:5px 7px;color:var(--ink);}
 .pagenav{display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap;}
-
-/* KPI + bars */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
-.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;}
-.kpi .big{font-size:22px;font-weight:bold;}
-.kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
-.funnel .frow{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
-.fbar{height:16px;border:1px solid var(--line);background:var(--fill);}
-.fbar>i{display:block;height:100%;background:var(--band);}
-.split{display:flex;height:16px;border:1px solid var(--line);}
-.split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
-
-/* vertical cards */
-.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
-.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;cursor:pointer;text-decoration:none;color:var(--ink);display:block;}
-.vcard:hover{background:var(--fill2);border-color:#888;}
-.vcard.on{border:2px solid #555;background:var(--fill);}
-.vcard .cnt{font-size:20px;font-weight:bold;}
-.vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;}
-.vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;}
-.vcard .pbar>i{display:block;height:100%;background:var(--band);}
-
-/* tables */
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
-th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
-tr.click{cursor:pointer;}
-tr.click:hover td{background:var(--fill2);}
-tr.click a{text-decoration:none;color:var(--ink);}
-.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;}
-.pill.dark{background:#dcdcdc;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;} .kpi .big{font-size:22px;font-weight:bold;} .kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
+.funnel .frow{display:grid;grid-template-columns:130px 1fr 96px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
+.fbar{height:16px;border:1px solid var(--line);background:var(--fill);} .fbar>i{display:block;height:100%;background:var(--band);}
+.split{display:flex;height:16px;border:1px solid var(--line);} .split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
+.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
+.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;text-decoration:none;color:var(--ink);display:block;} .vcard:hover{background:var(--fill2);border-color:#888;} .vcard.on{border:2px solid #555;background:var(--fill);}
+.vcard .cnt{font-size:20px;font-weight:bold;} .vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;} .vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;} .vcard .pbar>i{display:block;height:100%;background:var(--band);}
+table{width:100%;border-collapse:collapse;font-size:12px;} th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;} th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
+tr.click{cursor:pointer;} tr.click:hover td{background:var(--fill2);} tr.click a{text-decoration:none;color:var(--ink);}
+.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;} .pill.dark{background:#dcdcdc;}
 .status{font-size:10px;border:1px solid var(--soft);padding:1px 5px;white-space:nowrap;}
-
-/* stepper */
 .steps{display:flex;flex-wrap:wrap;margin-bottom:14px;}
-.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);}
-.step+.step{border-left:none;}
-.step .n{font-size:10px;color:var(--soft);}
-.step .l{font-size:12px;}
-.step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;}
-.step.on .l{font-weight:bold;}
-.step.done .n::after{content:" ✓";color:#555;}
-.step:hover{background:#e6e6e6;}
-
-/* generic rows */
-.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;}
-.telrow:last-child{border-bottom:none;}
-.telrow .k small{display:block;color:var(--soft);font-size:10px;}
-.telrow .v{font-weight:bold;text-align:right;}
-.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;}
-.bar>i{display:block;height:100%;background:var(--band);}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:800px){.two{grid-template-columns:1fr;}}
-.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;}
-.chk:last-child{border-bottom:none;}
-.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;}
-.chk .b.on{background:#cfcfcf;}
-
-/* gates + sliders (configure) */
-.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);}
-.gate:last-child{border-bottom:none;}
-.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;}
-.gate .box.on{background:#cfcfcf;}
-.gate small{color:var(--mid);display:block;font-size:10.5px;}
-.slrow{padding:8px 0;border-bottom:1px dotted var(--line);}
-.slrow:last-child{border-bottom:none;}
+.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);} .step+.step{border-left:none;}
+.step .n{font-size:10px;color:var(--soft);} .step .l{font-size:12px;} .step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;} .step.on .l{font-weight:bold;} .step.done .n::after{content:" \2713";color:#555;} .step:hover{background:#e6e6e6;}
+.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;} .telrow:last-child{border-bottom:none;}
+.telrow .k small{display:block;color:var(--soft);font-size:10px;} .telrow .v{font-weight:bold;text-align:right;}
+.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;} .bar>i{display:block;height:100%;background:var(--band);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;} @media(max-width:800px){.two{grid-template-columns:1fr;}}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;} .chk:last-child{border-bottom:none;}
+.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;} .chk .b.on{background:#cfcfcf;}
+.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);} .gate:last-child{border-bottom:none;}
+.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;} .gate .box.on{background:#cfcfcf;} .gate small{color:var(--mid);display:block;font-size:10.5px;}
+.slrow{padding:8px 0;border-bottom:1px dotted var(--line);} .slrow:last-child{border-bottom:none;}
 .slhd{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--fill);border:1px solid var(--line);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;}
 input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;border-radius:0;}
 .slnote{font-size:10px;color:var(--soft);margin-top:2px;}
-
-/* output */
-.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;}
-.reco .tier{font-size:20px;font-weight:bold;}
-.reco .conf{font-size:11px;color:var(--mid);}
+.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;} .reco .tier{font-size:20px;font-weight:bold;} .reco .conf{font-size:11px;color:var(--mid);}
 .track{position:relative;height:24px;border:1.5px solid var(--line);background:linear-gradient(90deg,#fbfbfb,#e6e6e6);margin:4px 0 8px;}
 .seg{position:absolute;top:0;bottom:0;border-right:1px dashed var(--soft);font-size:9px;color:var(--soft);padding:2px 4px;}
-.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;}
-.marker::after{content:"▲";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
-.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-@media(max-width:520px){.motions{grid-template-columns:1fr;}}
-.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;}
-.mo b{display:block;margin-bottom:3px;}
-.mo.pick{border:2px solid #555;background:#e4e4e4;}
-.mo small{color:var(--mid);font-size:10px;}
-
-/* debate */
-.debate{border:1.5px solid #888;background:#f2f2f2;}
-.debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
-.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;}
-.qn:last-child{border-bottom:none;}
-.qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
-
-
-/* ===== agent layer (context-aware, relevance-realization) ===== */
+.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;} .marker::after{content:"\25b2";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
+.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;} .motions.five{grid-template-columns:repeat(5,1fr);} .motions.four{grid-template-columns:repeat(4,1fr);}
+@media(max-width:680px){.motions,.motions.five,.motions.four{grid-template-columns:1fr 1fr;}}
+.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;} .mo b{display:block;margin-bottom:3px;} .mo.pick{border:2px solid #555;background:#e4e4e4;} .mo small{color:var(--mid);font-size:10px;}
+.debate{border:1.5px solid #888;background:#f2f2f2;} .debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
+.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;} .qn:last-child{border-bottom:none;} .qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
 .agent{border:1.5px solid #555;background:#f4f4f4;margin-bottom:14px;position:relative;}
 .agent::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:repeating-linear-gradient(#4a4a4a,#4a4a4a 3px,#6a6a6a 3px,#6a6a6a 6px);}
 .agent .a-hd{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#444;}
-.agent .glyph{font-size:13px;}
-.agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);letter-spacing:.05em;}
-.agent .a-bd{padding:10px 12px 10px 16px;}
-.agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;}
-.agent .insight b{background:#e2e2e2;padding:0 3px;}
-.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-.agent .dots{display:flex;gap:3px;flex-wrap:wrap;}
-.agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;}
-.agent .dots i.lit{background:#4a4a4a;border-color:#333;}
-.agent .field small{font-size:10px;color:var(--soft);}
-.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-.agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);}
-.agent .chip.primary{background:#dcdcdc;}
-.agent .chip:hover{background:#e6e6e6;}
-.agent details{margin-top:8px;}
-.agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;letter-spacing:.03em;}
-.agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;}
-.agent details li{margin:2px 0;}
-.agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
-</style>
-</head>
-<body>
+.agent .glyph{font-size:13px;} .agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);}
+.agent .a-bd{padding:10px 12px 10px 16px;} .agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;} .agent .insight b{background:#e2e2e2;padding:0 3px;}
+.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;} .agent .dots{display:flex;gap:3px;flex-wrap:wrap;} .agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;} .agent .dots i.lit{background:#4a4a4a;border-color:#333;} .agent .field small{font-size:10px;color:var(--soft);}
+.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);} .agent .chip.primary{background:#dcdcdc;}
+.agent details{margin-top:8px;} .agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;} .agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;} .agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
+.rc{font-size:9px;border:1px solid #777;padding:0 5px;border-radius:9px;letter-spacing:.04em;white-space:nowrap;} .rc.biz{background:#4a4a4a;color:#fff;border-color:#333;} .rc.acc{background:#fff;color:#333;} .rc.adv{background:#fff;border-style:dashed;color:#555;}
+.collab{border:1.5px solid var(--line);background:#fafafa;padding:8px 12px;margin-bottom:12px;font-size:11px;} .collab .c-parties{display:flex;gap:16px;flex-wrap:wrap;margin:5px 0;} .collab .party{display:flex;gap:6px;align-items:center;color:var(--mid);} .collab .c-now{border-top:1px dotted var(--line);padding-top:5px;color:#333;}
+.own{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dotted var(--line);font-size:11.5px;} .own:last-child{border-bottom:none;} .own .lbl{flex:1;}
+.st{font-size:9px;border:1px solid var(--soft);padding:0 5px;white-space:nowrap;} .st.done{background:#dcdcdc;} .st.prog{background:#efefef;} .st.block{background:#fff;border-style:dashed;border-color:#555;color:#333;}
+.log{display:grid;grid-template-columns:46px auto 1fr;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dotted var(--line);font-size:11px;} .log:last-child{border-bottom:none;} .log .t{color:var(--soft);font-size:10px;}
+</style></head><body>
 <div class="sheet">
-  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 1 / 6 · Portfolio dashboard</span></div>
-
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 1 / 6</span></div>
   <div class="crumb"><b>Book overview</b></div>
   <h1>Portfolio Profiler — QuickBooks Desktop client book</h1>
-  <div class="sub">128 QBDT clients across 5 verticals · overall migration progress and where each segment sits in the funnel</div>
-  <div class="agent">
-    <div class="a-hd"><span class="glyph">◇</span> Agent · book triage <span class="rr">relevance realized</span></div>
-    <div class="a-bd">
-      <div class="insight"><b>Copperline</b> is your cleanest convert — start there. Separately, <b>Truss &amp; Co.</b> has gone silent 17 days with no reason logged: that’s the real leak, not a slow deal.</div>
-      <div class="field"><span class="dots"><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></span><small>128 clients scanned → 2 need you now</small></div>
-      <div class="a-act"><a class="chip primary" href="01-profile.html">Open Copperline</a><span class="chip">Force a reason on Truss &amp; Co.</span><details><summary>why?</summary><ul><li>Copperline: no gate, composite 52, single blocker cleared → lowest-effort convert.</li><li>Truss: past the stall threshold with no call-off reason = unrecoverable signal loss.</li><li>21 IES-tier clients deprioritized this week — higher effort, not time-critical.</li></ul></details></div>
-      <div class="meta">Agent foregrounded 2 of 128. If it picked the wrong two, that error is invisible unless you check — see debate.</div>
-    </div>
-  </div>
-
-
-  <div class="panel"><div class="hd">Overall progress</div><div class="bd">
-    <div class="kpis">
-      <div class="kpi"><div class="big">128</div><div class="lbl">QBDT clients</div></div>
-      <div class="kpi"><div class="big">43</div><div class="lbl">in engagement</div></div>
-      <div class="kpi"><div class="big">18</div><div class="lbl">migrated</div></div>
-      <div class="kpi"><div class="big">11</div><div class="lbl">called off</div></div>
-      <div class="kpi"><div class="big">9</div><div class="lbl">stalled &gt; 14d</div></div>
-    </div>
-    <div class="funnel" style="margin-top:12px;">
-      <div class="frow"><span>Profiled</span><div class="fbar"><i style="width:100%"></i></div><b>128</b></div>
-      <div class="frow"><span>Configured</span><div class="fbar"><i style="width:75%"></i></div><b>96</b></div>
-      <div class="frow"><span>Recommended</span><div class="fbar"><i style="width:55%"></i></div><b>71</b></div>
-      <div class="frow"><span>Engaged</span><div class="fbar"><i style="width:34%"></i></div><b>43</b></div>
-      <div class="frow"><span>Migrated</span><div class="fbar"><i style="width:14%"></i></div><b>18</b></div>
-    </div>
-    <div style="margin-top:12px;font-size:11px;">Recommended tier mix (of 71):
-      <div class="split" style="margin-top:4px;">
-        <i style="width:17%;background:#efefef">QBO 12</i>
-        <i style="width:53%;background:#cfcfcf">QBOA 38</i>
-        <i style="width:30%;background:#a9a9a9">IES 21</i>
-      </div>
-    </div>
-    <div class="note">Numbers are illustrative stubs. Debate: is "migrated" the north-star, or is "recommended-correctly" (low call-off from wrong-tier) the real quality metric?</div>
-  </div></div>
-
-  <div class="panel"><div class="hd">By vertical <span class="tag">click to drill in</span></div><div class="bd">
-    <div class="vgrid">
-      <a class="vcard on" href="#construction"><h3>Construction</h3><div class="cnt">34</div><div class="pbar"><i style="width:41%"></i></div><div class="mini">14 reco · 6 migrated · QBOA-heavy · 2 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Mfg &amp; Wholesale</h3><div class="cnt">22</div><div class="pbar"><i style="width:32%"></i></div><div class="mini">9 reco · 3 migrated · IES-leaning · 3 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Retail / E-com</h3><div class="cnt">28</div><div class="pbar"><i style="width:29%"></i></div><div class="mini">13 reco · 4 migrated · POS-orphan urgency</div></a>
-      <a class="vcard" href="#construction"><h3>Professional Svcs</h3><div class="cnt">30</div><div class="pbar"><i style="width:37%"></i></div><div class="mini">11 reco · 4 migrated · QBOA/IES split</div></a>
-      <a class="vcard" href="#construction"><h3>Nonprofit</h3><div class="cnt">14</div><div class="pbar"><i style="width:21%"></i></div><div class="mini">5 reco · 1 migrated · IES fund-accounting fit</div></a>
-    </div>
-    <div class="note">Bars = % of that vertical past "recommended." Construction is selected and drilled into below as the worked example (only vertical wired in this set).</div>
-  </div></div>
-
-  <div class="panel" id="construction"><div class="hd">Construction · client list <span class="tag">34 clients — showing sample</span></div><div class="bd">
-    <table>
-      <thead><tr><th>Client</th><th>Sub-type</th><th>Stage</th><th>Reco tier</th><th>Motion</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr class="click" onclick="location.href='01-profile.html'">
-          <td><a href="01-profile.html"><b>Copperline Contracting Co.</b></a></td><td>Residential remodel / light GC</td>
-          <td><span class="pill">Recommend</span></td><td><span class="pill dark">QBOA</span></td><td>own-data sandbox</td><td><span class="status">on track</span></td></tr>
-        <tr class="click" onclick="location.href='02-configure.html'"><td>Rivet &amp; Beam Construction</td><td>Commercial GC</td><td><span class="pill">Configure</span></td><td><span class="pill">judgment</span></td><td>own-data sandbox</td><td><span class="status">reviewing</span></td></tr>
-        <tr class="click" onclick="location.href='04-engage.html'"><td>Ferro Mechanical LLC</td><td>HVAC / specialty</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">day 6/30</span></td></tr>
-        <tr class="click" onclick="location.href='03-recommend.html'"><td>Meridian Building Group</td><td>Multi-entity builder</td><td><span class="pill">Recommend</span></td><td><span class="pill dark">IES</span></td><td>test drive</td><td><span class="status">gate fired</span></td></tr>
-        <tr><td>Oakline Concrete</td><td>Small sub</td><td><span class="pill">Recommend</span></td><td><span class="pill">QBO</span></td><td>direct buy</td><td><span class="status">over-buyer</span></td></tr>
-        <tr class="click" onclick="location.href='05-migrate.html'"><td>Hollis Roofing</td><td>Roofing</td><td><span class="pill">Migrate</span></td><td><span class="pill dark">QBOA</span></td><td>graduated</td><td><span class="status">go-live wk</span></td></tr>
-        <tr><td>Truss &amp; Co.</td><td>Framing sub</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">stalled 17d</span></td></tr>
-      </tbody>
-    </table>
-    <div class="note">Copperline is the fully wired journey. The other rows jump to the same shared step pages so you can feel the navigation; a real build gives each its own record. The row mix deliberately spans all four motions — test drive, sandbox, 30-day trial, direct buy — and QBO / QBOA / IES / judgment tiers. Truss shows the trial’s failure mode (silent stall).</div>
-  </div></div>
-
+  <div class="sub">128 QBDT clients · profiling each toward QBO, QBO Advanced, or Intuit Enterprise Suite — on a shared audit trail across business, accountant and Intuit advisor.</div>
+  <div class="collab"><div><b>Tri-party model</b> — every client record is shared by three roles</div><div class="c-parties"><span class="party"><span class="rc biz">BIZ</span> the business / customer</span><span class="party"><span class="rc acc">ACC</span> the accountant (you)</span><span class="party"><span class="rc adv">ADV</span> Intuit expert / migration advisor</span></div><div class="c-now">Legend used throughout. "Waiting on" below shows who currently blocks each client.</div></div>
+  <div class="agent"><div class="a-hd"><span class="glyph">◇</span> Agent · book triage <span class="rr">relevance realized</span></div><div class="a-bd"><div class="insight"><b>Copperline</b> is your cleanest convert — start there. Separately, <b>Truss &amp; Co.</b> is a 30-day trial gone silent 17 days with the auto-convert charge looming: decide before the card is billed.</div><div class="field"><span class="dots"><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></span><small>128 clients scanned → 2 need you now</small></div><div class="a-act"><a class="chip primary" href="01-profile.html">Open Copperline</a><span class="chip">Review Truss before auto-convert</span><details><summary>why?</summary><ul><li>Copperline: no gate, composite 51, single blocker → lowest-effort convert.</li><li>Truss: trial auto-converts in 4 days; silent = risk of an unwanted charge + bad-faith signal.</li><li>21 IES-tier clients deprioritized — higher effort, not time-critical this week.</li></ul></details></div><div class="meta">Agent foregrounded 2 of 128. A wrong pick is invisible unless you check — see debate.</div></div></div>
+  <div class="panel"><div class="hd">Overall progress</div><div class="bd"><div class="kpis"><div class="kpi"><div class="big">128</div><div class="lbl">QBDT clients</div></div><div class="kpi"><div class="big">43</div><div class="lbl">in engagement</div></div><div class="kpi"><div class="big">18</div><div class="lbl">migrated</div></div><div class="kpi"><div class="big">7</div><div class="lbl">waiting on advisor</div></div><div class="kpi"><div class="big">9</div><div class="lbl">stalled &gt; 14d</div></div></div><div class="funnel" style="margin-top:12px;"><div class="frow"><span>Profiled</span><div class="fbar"><i style="width:100%"></i></div><b>128</b></div><div class="frow"><span>Configured</span><div class="fbar"><i style="width:75%"></i></div><b>96</b></div><div class="frow"><span>Recommended</span><div class="fbar"><i style="width:55%"></i></div><b>71</b></div><div class="frow"><span>Engaged</span><div class="fbar"><i style="width:34%"></i></div><b>43</b></div><div class="frow"><span>Migrated</span><div class="fbar"><i style="width:14%"></i></div><b>18</b></div></div><div style="margin-top:12px;font-size:11px;">Recommended SKU mix (of 71):<div class="split" style="margin-top:4px;"><i style="width:17%;background:#efefef">QBO 12</i><i style="width:53%;background:#cfcfcf">QBOA 38</i><i style="width:30%;background:#a9a9a9">IES 21</i></div></div><div class="note">Debate: is "migrated" the north-star, or is "recommended-correctly" (low wrong-tier call-off) the real quality metric?</div></div></div>
+  <div class="panel"><div class="hd">By vertical <span class="tag">click to drill in</span></div><div class="bd"><div class="vgrid"><a class="vcard on" href="#construction"><h3>Construction</h3><div class="cnt">34</div><div class="pbar"><i style="width:41%"></i></div><div class="mini">14 reco · 6 migrated · QBOA-heavy</div></a><a class="vcard" href="#construction"><h3>Mfg &amp; Wholesale</h3><div class="cnt">22</div><div class="pbar"><i style="width:32%"></i></div><div class="mini">9 reco · IES-leaning</div></a><a class="vcard" href="#construction"><h3>Retail / E-com</h3><div class="cnt">28</div><div class="pbar"><i style="width:29%"></i></div><div class="mini">POS-orphan urgency</div></a><a class="vcard" href="#construction"><h3>Professional Svcs</h3><div class="cnt">30</div><div class="pbar"><i style="width:37%"></i></div><div class="mini">QBOA/IES split</div></a><a class="vcard" href="#construction"><h3>Nonprofit</h3><div class="cnt">14</div><div class="pbar"><i style="width:21%"></i></div><div class="mini">IES fund fit</div></a></div><div class="note">Construction is the worked example — the only vertical wired in this set.</div></div></div>
+  <div class="panel" id="construction"><div class="hd">Construction · client list <span class="tag">34 clients — sample</span></div><div class="bd"><table><thead><tr><th>Client</th><th>Step</th><th>Reco SKU</th><th>Motion</th><th>Waiting on</th><th>Status</th></tr></thead><tbody><tr class="click" onclick="location.href='01-profile.html'"><td><a href="01-profile.html"><b>Copperline Contracting Co.</b></a></td><td><span class="pill">Recommend</span></td><td><span class="pill dark">QBOA</span></td><td>own-data sandbox</td><td><span class="rc biz">BIZ</span> approve reco</td><td><span class="status">on track</span></td></tr><tr class="click" onclick="location.href='02-configure.html'"><td>Rivet &amp; Beam Construction</td><td><span class="pill">Configure</span></td><td><span class="pill">judgment</span></td><td>own-data sandbox</td><td><span class="rc acc">ACC</span> tie-break</td><td><span class="status">reviewing</span></td></tr><tr class="click" onclick="location.href='04-engage.html'"><td>Ferro Mechanical LLC</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="rc biz">BIZ</span> live week</td><td><span class="status">trial 6/30</span></td></tr><tr class="click" onclick="location.href='03-recommend.html'"><td>Meridian Building Group</td><td><span class="pill">Recommend</span></td><td><span class="pill dark">IES</span></td><td>test drive</td><td><span class="rc adv">ADV</span> demo data</td><td><span class="status">gate fired</span></td></tr><tr><td>Oakline Concrete</td><td><span class="pill">Recommend</span></td><td><span class="pill">QBO</span></td><td>direct buy</td><td>—</td><td><span class="status">over-buyer</span></td></tr><tr class="click" onclick="location.href='05-migrate.html'"><td>Hollis Roofing</td><td><span class="pill">Migrate</span></td><td><span class="pill dark">QBOA</span></td><td>graduated</td><td><span class="rc adv">ADV</span> delta-sync</td><td><span class="status">go-live wk</span></td></tr><tr><td>Truss &amp; Co.</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="rc acc">ACC</span> pre-charge call</td><td><span class="status">stalled 17d</span></td></tr></tbody></table><div class="note">Row mix spans all five motions and QBO/QBOA/IES. "Waiting on" makes tri-party ownership visible at book level; Truss shows the trial’s failure mode — silent stall into an auto-charge.</div></div></div>
   <div class="pagenav"><span></span><a class="wf" href="01-profile.html">Open Copperline → 01 Profile →</a></div>
 </div>
-</body>
-</html>
+</body></html>

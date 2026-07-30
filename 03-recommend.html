@@ -1,283 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4 · 03 Recommend — Copperline</title>
-<style>
-/* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
-:root{
-  --ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;
-  --fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;
-}
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>4 · 03 Recommend</title><style>
+:root{--ink:#2b2b2b;--mid:#6b6b6b;--soft:#9a9a9a;--line:#c4c4c4;--fill:#ededed;--fill2:#f6f6f6;--panel:#fff;--lock:#e2e2e2;--band:#d9d9d9;}
 *{box-sizing:border-box;}
 body{margin:0;background:#eee;color:var(--ink);font-family:"Courier New",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.45;}
 .sheet{max-width:1180px;margin:0 auto;padding:16px 18px 90px;}
-a{color:#333;}
-h1{font-size:16px;margin:0 0 2px;}
-h2{font-size:14px;margin:0 0 8px;}
-h3{font-size:12px;margin:0 0 6px;}
-.sub{color:var(--mid);font-size:11px;margin-bottom:14px;}
-
-/* wireframe banner */
+a{color:#333;} h1{font-size:16px;margin:0 0 2px;} h3{font-size:12px;margin:0 0 6px;}
+.sub{color:var(--mid);font-size:11px;margin-bottom:12px;}
 .wf-banner{border:1.5px dashed #7a7a7a;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#e7e7e7 10px,#e7e7e7 20px);padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-
-/* persistent customer strip */
 .custbar{border:1.5px solid var(--line);background:var(--fill2);padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;}
-.custbar b{font-size:12px;}
-.custbar .meta span{margin-left:14px;color:var(--mid);}
-.custbar .meta b{color:#333;}
-
-/* breadcrumb */
-.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;}
-.crumb a{text-decoration:underline;cursor:pointer;}
-.crumb b{color:#000;}
-
-/* panels */
+.custbar b{font-size:12px;} .custbar .meta span{margin-left:14px;color:var(--mid);} .custbar .meta b{color:#333;}
+.crumb{font-size:11px;color:var(--mid);margin-bottom:12px;} .crumb a{text-decoration:underline;} .crumb b{color:#000;}
 .panel{background:var(--panel);border:1.5px solid var(--line);margin-bottom:14px;}
 .panel>.hd{background:var(--fill);border-bottom:1.5px solid var(--line);padding:7px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:#444;display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .panel>.bd{padding:12px;}
 .tag{font-size:9.5px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
-.tag.lock{background:var(--lock);}
-.tag.input{background:#fff;border-style:dashed;}
+.tag.lock{background:var(--lock);} .tag.input{background:#fff;border-style:dashed;}
 .note{font-size:10.5px;color:var(--mid);font-style:italic;margin-top:8px;}
-ul.tight{margin:4px 0;padding-left:18px;}
-ul.tight li{margin:2px 0;}
-
-/* buttons */
+ul.tight{margin:4px 0;padding-left:18px;} ul.tight li{margin:2px 0;}
 button.wf,a.wf{display:inline-block;text-decoration:none;font-family:inherit;font-size:12px;border:1.5px solid #666;background:var(--fill);padding:8px 12px;cursor:pointer;color:var(--ink);}
-a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;}
-a.wf:hover,button.wf:hover{background:#e0e0e0;}
+a.wf.alt,button.wf.alt{background:#fff;border-style:dashed;} a.wf:hover,button.wf:hover{background:#e0e0e0;}
 select,input[type=date]{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;padding:5px 7px;color:var(--ink);}
 .pagenav{display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap;}
-
-/* KPI + bars */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
-.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;}
-.kpi .big{font-size:22px;font-weight:bold;}
-.kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
-.funnel .frow{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
-.fbar{height:16px;border:1px solid var(--line);background:var(--fill);}
-.fbar>i{display:block;height:100%;background:var(--band);}
-.split{display:flex;height:16px;border:1px solid var(--line);}
-.split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
-
-/* vertical cards */
-.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-@media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
-.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;cursor:pointer;text-decoration:none;color:var(--ink);display:block;}
-.vcard:hover{background:var(--fill2);border-color:#888;}
-.vcard.on{border:2px solid #555;background:var(--fill);}
-.vcard .cnt{font-size:20px;font-weight:bold;}
-.vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;}
-.vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;}
-.vcard .pbar>i{display:block;height:100%;background:var(--band);}
-
-/* tables */
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;}
-th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
-tr.click{cursor:pointer;}
-tr.click:hover td{background:var(--fill2);}
-tr.click a{text-decoration:none;color:var(--ink);}
-.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;}
-.pill.dark{background:#dcdcdc;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{border:1.5px solid var(--line);background:var(--fill2);padding:10px;} .kpi .big{font-size:22px;font-weight:bold;} .kpi .lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
+.funnel .frow{display:grid;grid-template-columns:130px 1fr 96px;gap:8px;align-items:center;margin:5px 0;font-size:11px;}
+.fbar{height:16px;border:1px solid var(--line);background:var(--fill);} .fbar>i{display:block;height:100%;background:var(--band);}
+.split{display:flex;height:16px;border:1px solid var(--line);} .split>i{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#333;border-right:1px solid #fff;}
+.vgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;} @media(max-width:900px){.vgrid{grid-template-columns:repeat(2,1fr);}}
+.vcard{border:1.5px solid var(--line);background:#fff;padding:10px;text-decoration:none;color:var(--ink);display:block;} .vcard:hover{background:var(--fill2);border-color:#888;} .vcard.on{border:2px solid #555;background:var(--fill);}
+.vcard .cnt{font-size:20px;font-weight:bold;} .vcard .mini{font-size:10px;color:var(--mid);margin-top:6px;} .vcard .pbar{height:8px;border:1px solid var(--line);background:var(--fill);margin-top:6px;} .vcard .pbar>i{display:block;height:100%;background:var(--band);}
+table{width:100%;border-collapse:collapse;font-size:12px;} th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;} th{background:var(--fill);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#444;}
+tr.click{cursor:pointer;} tr.click:hover td{background:var(--fill2);} tr.click a{text-decoration:none;color:var(--ink);}
+.pill{font-size:10px;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:#444;background:#fff;} .pill.dark{background:#dcdcdc;}
 .status{font-size:10px;border:1px solid var(--soft);padding:1px 5px;white-space:nowrap;}
-
-/* stepper */
 .steps{display:flex;flex-wrap:wrap;margin-bottom:14px;}
-.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);}
-.step+.step{border-left:none;}
-.step .n{font-size:10px;color:var(--soft);}
-.step .l{font-size:12px;}
-.step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;}
-.step.on .l{font-weight:bold;}
-.step.done .n::after{content:" ✓";color:#555;}
-.step:hover{background:#e6e6e6;}
-
-/* generic rows */
-.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;}
-.telrow:last-child{border-bottom:none;}
-.telrow .k small{display:block;color:var(--soft);font-size:10px;}
-.telrow .v{font-weight:bold;text-align:right;}
-.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;}
-.bar>i{display:block;height:100%;background:var(--band);}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:800px){.two{grid-template-columns:1fr;}}
-.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;}
-.chk:last-child{border-bottom:none;}
-.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;}
-.chk .b.on{background:#cfcfcf;}
-
-/* gates + sliders (configure) */
-.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);}
-.gate:last-child{border-bottom:none;}
-.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;}
-.gate .box.on{background:#cfcfcf;}
-.gate small{color:var(--mid);display:block;font-size:10.5px;}
-.slrow{padding:8px 0;border-bottom:1px dotted var(--line);}
-.slrow:last-child{border-bottom:none;}
+.step{flex:1 1 0;min-width:118px;border:1.5px solid var(--line);background:var(--fill2);padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink);} .step+.step{border-left:none;}
+.step .n{font-size:10px;color:var(--soft);} .step .l{font-size:12px;} .step.on{background:#dcdcdc;border-color:#7a7a7a;border-width:2px;} .step.on .l{font-weight:bold;} .step.done .n::after{content:" \2713";color:#555;} .step:hover{background:#e6e6e6;}
+.telrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-bottom:1px dotted var(--line);align-items:center;} .telrow:last-child{border-bottom:none;}
+.telrow .k small{display:block;color:var(--soft);font-size:10px;} .telrow .v{font-weight:bold;text-align:right;}
+.bar{height:7px;background:var(--fill);border:1px solid var(--line);grid-column:1/3;margin-top:2px;} .bar>i{display:block;height:100%;background:var(--band);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;} @media(max-width:800px){.two{grid-template-columns:1fr;}}
+.chk{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line);font-size:12px;} .chk:last-child{border-bottom:none;}
+.chk .b{width:16px;height:16px;border:1.5px solid #777;flex:none;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;} .chk .b.on{background:#cfcfcf;}
+.gate{display:flex;gap:9px;padding:7px 0;border-bottom:1px dotted var(--line);} .gate:last-child{border-bottom:none;}
+.gate .box{width:18px;height:18px;border:1.5px solid #777;flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:bold;user-select:none;} .gate .box.on{background:#cfcfcf;} .gate small{color:var(--mid);display:block;font-size:10.5px;}
+.slrow{padding:8px 0;border-bottom:1px dotted var(--line);} .slrow:last-child{border-bottom:none;}
 .slhd{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--fill);border:1px solid var(--line);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;}
 input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;border:1.5px solid #555;cursor:pointer;border-radius:0;}
 .slnote{font-size:10px;color:var(--soft);margin-top:2px;}
-
-/* output */
-.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;}
-.reco .tier{font-size:20px;font-weight:bold;}
-.reco .conf{font-size:11px;color:var(--mid);}
+.reco{border:2px solid #777;background:var(--fill2);padding:11px;margin-bottom:10px;} .reco .tier{font-size:20px;font-weight:bold;} .reco .conf{font-size:11px;color:var(--mid);}
 .track{position:relative;height:24px;border:1.5px solid var(--line);background:linear-gradient(90deg,#fbfbfb,#e6e6e6);margin:4px 0 8px;}
 .seg{position:absolute;top:0;bottom:0;border-right:1px dashed var(--soft);font-size:9px;color:var(--soft);padding:2px 4px;}
-.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;}
-.marker::after{content:"▲";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
-.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-@media(max-width:520px){.motions{grid-template-columns:1fr;}}
-.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;}
-.mo b{display:block;margin-bottom:3px;}
-.mo.pick{border:2px solid #555;background:#e4e4e4;}
-.mo small{color:var(--mid);font-size:10px;}
-
-/* debate */
-.debate{border:1.5px solid #888;background:#f2f2f2;}
-.debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
-.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;}
-.qn:last-child{border-bottom:none;}
-.qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
-
-
-/* ===== agent layer (context-aware, relevance-realization) ===== */
+.marker{position:absolute;top:-6px;bottom:-6px;border-left:2.5px solid #333;} .marker::after{content:"\25b2";position:absolute;bottom:-15px;left:-5px;font-size:10px;}
+.motions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;} .motions.five{grid-template-columns:repeat(5,1fr);} .motions.four{grid-template-columns:repeat(4,1fr);}
+@media(max-width:680px){.motions,.motions.five,.motions.four{grid-template-columns:1fr 1fr;}}
+.mo{border:1.5px solid var(--line);background:#fff;padding:8px;font-size:11px;text-align:center;} .mo b{display:block;margin-bottom:3px;} .mo.pick{border:2px solid #555;background:#e4e4e4;} .mo small{color:var(--mid);font-size:10px;}
+.debate{border:1.5px solid #888;background:#f2f2f2;} .debate>.hd{background:#e2e2e2;border-bottom:1.5px solid #888;}
+.qn{border-bottom:1px dotted var(--line);padding:6px 0;font-size:11.5px;} .qn:last-child{border-bottom:none;} .qn b{font-size:10px;color:#555;text-transform:uppercase;display:block;}
 .agent{border:1.5px solid #555;background:#f4f4f4;margin-bottom:14px;position:relative;}
 .agent::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:repeating-linear-gradient(#4a4a4a,#4a4a4a 3px,#6a6a6a 3px,#6a6a6a 6px);}
 .agent .a-hd{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#444;}
-.agent .glyph{font-size:13px;}
-.agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);letter-spacing:.05em;}
-.agent .a-bd{padding:10px 12px 10px 16px;}
-.agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;}
-.agent .insight b{background:#e2e2e2;padding:0 3px;}
-.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-.agent .dots{display:flex;gap:3px;flex-wrap:wrap;}
-.agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;}
-.agent .dots i.lit{background:#4a4a4a;border-color:#333;}
-.agent .field small{font-size:10px;color:var(--soft);}
-.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-.agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);}
-.agent .chip.primary{background:#dcdcdc;}
-.agent .chip:hover{background:#e6e6e6;}
-.agent details{margin-top:8px;}
-.agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;letter-spacing:.03em;}
-.agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;}
-.agent details li{margin:2px 0;}
-.agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
-.motions.four{grid-template-columns:repeat(4,1fr);}@media(max-width:640px){.motions.four{grid-template-columns:1fr 1fr;}}
-</style>
-</head>
-<body>
+.agent .glyph{font-size:13px;} .agent .rr{margin-left:auto;border:1px solid var(--soft);padding:1px 6px;border-radius:10px;color:var(--mid);}
+.agent .a-bd{padding:10px 12px 10px 16px;} .agent .insight{font-size:13px;line-height:1.5;margin-bottom:8px;} .agent .insight b{background:#e2e2e2;padding:0 3px;}
+.agent .field{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;} .agent .dots{display:flex;gap:3px;flex-wrap:wrap;} .agent .dots i{width:9px;height:9px;border:1px solid #bbb;background:#e9e9e9;display:block;} .agent .dots i.lit{background:#4a4a4a;border-color:#333;} .agent .field small{font-size:10px;color:var(--soft);}
+.agent .a-act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;} .agent .chip{font-size:11px;border:1.5px solid #666;background:#fff;padding:4px 9px;cursor:pointer;text-decoration:none;color:var(--ink);} .agent .chip.primary{background:#dcdcdc;}
+.agent details{margin-top:8px;} .agent summary{cursor:pointer;color:var(--mid);font-size:10.5px;} .agent details ul{margin:6px 0 0;padding-left:16px;color:var(--mid);font-size:11px;} .agent .meta{font-size:10px;color:var(--soft);font-style:italic;margin-top:8px;border-top:1px dotted var(--line);padding-top:6px;}
+.rc{font-size:9px;border:1px solid #777;padding:0 5px;border-radius:9px;letter-spacing:.04em;white-space:nowrap;} .rc.biz{background:#4a4a4a;color:#fff;border-color:#333;} .rc.acc{background:#fff;color:#333;} .rc.adv{background:#fff;border-style:dashed;color:#555;}
+.collab{border:1.5px solid var(--line);background:#fafafa;padding:8px 12px;margin-bottom:12px;font-size:11px;} .collab .c-parties{display:flex;gap:16px;flex-wrap:wrap;margin:5px 0;} .collab .party{display:flex;gap:6px;align-items:center;color:var(--mid);} .collab .c-now{border-top:1px dotted var(--line);padding-top:5px;color:#333;}
+.own{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dotted var(--line);font-size:11.5px;} .own:last-child{border-bottom:none;} .own .lbl{flex:1;}
+.st{font-size:9px;border:1px solid var(--soft);padding:0 5px;white-space:nowrap;} .st.done{background:#dcdcdc;} .st.prog{background:#efefef;} .st.block{background:#fff;border-style:dashed;border-color:#555;color:#333;}
+.log{display:grid;grid-template-columns:46px auto 1fr;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dotted var(--line);font-size:11px;} .log:last-child{border-bottom:none;} .log .t{color:var(--soft);font-size:10px;}
+</style></head><body>
 <div class="sheet">
-  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 4 / 6 · 03 Recommend</span></div>
-
-  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span>
-    <span class="meta"><span>current fit: <b>QBOA</b></span><span>stage: <b>Recommend</b></span></span></div>
-
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 4 / 6</span></div>
+  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span><span class="meta"><span>fit: <b>QBOA</b></span><span>step: <b>Recommend</b></span></span></div>
   <div class="crumb"><a href="index.html">Book overview</a> ▸ <a href="index.html#construction">Construction</a> ▸ <b>Copperline Contracting Co.</b></div>
-
-  <div class="steps">
-    <a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a>
-    <a class="step done" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a>
-    <a class="step on" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a>
-    <a class="step" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a>
-    <a class="step" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a>
-  </div>
-
+  <div class="collab"><div><b>Tri-party record</b> · contextual to this step</div><div class="c-parties"><span class="party"><span class="rc biz">BIZ</span> Copperline — D. Reyes, controller</span><span class="party"><span class="rc acc">ACC</span> You — ProAdvisor</span><span class="party"><span class="rc adv">ADV</span> Intuit migration advisor</span></div><div class="c-now">Now: <b>ACC</b> to pick a motion · <b>BIZ</b> to approve the recommendation · <b>ADV</b> on standby to stand up the environment</div></div>
+  <div class="steps"><a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a><a class="step done" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a><a class="step on" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a><a class="step" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a><a class="step" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a></div>
   <h1>03 · Recommend</h1>
-  <div class="sub">Composite 52 → QuickBooks Online Advanced. Four ways to prove it — test drive, sandbox, 30-day trial, or direct purchase. The analysis below picks the right one for Copperline rather than fanning out the menu.</div>
-  <div class="agent">
-    <div class="a-hd"><span class="glyph">◇</span> Agent · recommend <span class="rr">relevance realized</span></div>
-    <div class="a-bd">
-      <div class="insight">Only one objection is live: <b>“will job costing survive.”</b> That’s a <b>fidelity</b> doubt, not a concept doubt — so of the four motions the <b>own-data sandbox</b> fits; the 30-day trial only wins if they need a deadline.</div>
-      <div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>7 objection types → 1 likely</small></div>
-      <div class="a-act"><span class="chip primary">Open own-data sandbox</span><span class="chip">Start 30-day trial instead</span><details><summary>why?</summary><ul><li>Pricing objection: low — preferred pricing covers it.</li><li>Familiarity objection: medium — desktop EOL reframes it.</li><li>Job-costing objection: high — 85% dependency; the sandbox settles it with their own file, no commitment.</li></ul></details></div>
-      <div class="meta">Agent ruled out test drive (concept already clear) and picked sandbox over trial (no deadline needed). Debate: is that the accountant’s call, not the agent’s?</div>
-    </div>
-  </div>
-
-
-  <div class="panel"><div class="hd">Recommendation</div><div class="bd">
-    <div class="reco"><div class="tier">QuickBooks Online Advanced</div><div class="conf">confidence medium ~65% · single entity · job-cost-led · moderate scale</div></div>
-    <div class="two">
-      <div>
-        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);">What changes for them (QBDT → QBOA)</div>
-        <table style="margin-top:6px;">
-          <thead><tr><th>QBDT today</th><th>QBOA equivalent</th></tr></thead>
-          <tbody>
-            <tr><td>Customer : Job + job costing</td><td>Customers + Projects</td></tr>
-            <tr><td>Class (3 divisions)</td><td>Classes / tags</td></tr>
-            <tr><td>8 custom reports</td><td>Rebuild in modern custom reports</td></tr>
-            <tr><td>QB Time</td><td>QuickBooks Time (native)</td></tr>
-            <tr><td>Payments/AR app</td><td>QBO-native equivalent</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);">Why not the neighbours</div>
-        <ul class="tight">
-          <li><b>Not QBO Plus:</b> seat need + custom reporting + volume push past it.</li>
-          <li><b>Not IES:</b> single entity, no 3+ dimensions, no rev-rec — over-buying, higher cost, longer migrate.</li>
-        </ul>
-        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-top:8px;">Commercial angle</div>
-        <div style="font-size:11px;">ProAdvisor preferred pricing can front the offer (eligible clients up to ~60% off list) — accountant leads pricing, not Sales.</div>
-      </div>
-    </div>
-  </div></div>
-
-  <div class="panel"><div class="hd">Recommended motion &amp; objections</div><div class="bd">
-    <div class="motions four" style="margin-bottom:10px;">
-      <div class="mo"><b>Test drive</b><small>sample verticalized data · a guided look</small></div>
-      <div class="mo pick"><b>Sandbox (own-data)</b><small>their books · no clock · graduates to live</small></div>
-      <div class="mo"><b>30-day trial</b><small>own data · clock forces the decision</small></div>
-      <div class="mo"><b>Direct purchase</b><small>fit clear — skip the proof</small></div>
-    </div>
-    <table>
-      <thead><tr><th>Likely objection</th><th>Response</th></tr></thead>
-      <tbody>
-        <tr><td>"Will my job costing survive?"</td><td>Exactly what the sandbox proves — their own file, before any commitment or clock.</td></tr>
-        <tr><td>"Desktop feels faster / familiar"</td><td>Acknowledge; frame against desktop EOL + anywhere-access + no version upkeep.</td></tr>
-        <tr><td>"Cost vs. my current license"</td><td>Lead with preferred pricing; compare total, not sticker.</td></tr>
-      </tbody>
-    </table>
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-      <a class="wf" href="04-engage.html">Accept → open own-data sandbox</a>
-      <select><option value="">— accept —</option><option>Override → QBO</option><option>Override → IES</option></select>
-      <a class="wf alt" href="#">Send comparison PDF</a>
-    </div>
-    <div class="note">Debate: should "Recommend" ever let the accountant proceed without picking a motion? Forcing the choice keeps the funnel honest.</div>
-  </div></div>
-
-  <div class="panel"><div class="hd">Choosing the motion — four ways to prove QBO Advanced <span class="tag input">expected-outcome analysis</span></div><div class="bd">
-    <div style="font-size:11px;margin-bottom:8px;">These four aren’t a menu to lay out at once — that’s decision paralysis. They’re a <b>ladder of commitment</b>: Imagine → Play → Prove → Commit-test → Commit. The engine picks the rung matching the customer’s actual doubt; the rest is "step down to explore" or "step up to commit."</div>
-    <table>
-      <thead><tr><th>Motion</th><th>Data</th><th>Clock</th><th>Answers the doubt</th><th>Graduates?</th><th>Best when</th></tr></thead>
-      <tbody>
-        <tr><td><b>Test drive</b></td><td>sample, verticalized</td><td>none</td><td>"can I even picture it?"</td><td>no — a look</td><td>concept doubt; IES value you can’t feel on a feature list</td></tr>
-        <tr><td><b>Sandbox</b></td><td>seeded <i>or</i> own</td><td>none</td><td>"will it work / will MY data survive?"</td><td>own-data: <b>yes</b></td><td>fidelity / workflow doubt; judgment-tier tie-break</td></tr>
-        <tr><td><b>30-day trial</b></td><td>own (import)</td><td>hard 30d</td><td>"will my team adopt — am I ready to commit by a date?"</td><td>no — re-import</td><td>fit already clear; customer needs a deadline to move</td></tr>
-        <tr><td><b>Direct purchase</b></td><td>own (live)</td><td>n/a</td><td>none — decided</td><td>is the migration</td><td>fit unambiguous; a proof isn’t worth the friction</td></tr>
-      </tbody>
-    </table>
-    <div style="font-size:11px;margin-top:10px;"><b>The sharp distinction:</b> own-data sandbox and 30-day trial answer almost the same question — the only difference is <b>the clock</b>. Trial when the customer needs a deadline to act; sandbox when they need evidence without pressure. Only those two reach the fidelity answer with real data; only the sandbox graduates instead of discarding the work.</div>
-    <div style="font-size:11px;margin-top:8px;border-top:1px dotted var(--line);padding-top:8px;"><b>Copperline’s pick → own-data sandbox.</b> Their doubt is fidelity ("will my job costing survive"), not concept — so test drive is a wasted step. It graduates to production and catches a wrong-tier before commit. The <b>30-day trial is the named alternative</b> if they’re a procrastinator who needs the deadline, though desktop EOL may already supply the urgency.</div>
-  </div></div>
-
-  <div class="panel debate"><div class="hd">Debate · Recommend</div><div class="bd">
-    <div class="qn"><b>false confidence</b>Medium ~65% — do accountants want the number, or does it just invite second-guessing?</div>
-    <div class="qn"><b>override logging</b>An override should be logged against the reco for the learning loop. Who reviews overrides?</div>
-    <div class="qn"><b>decision paralysis</b>Four motions is a lot. Does the engine commit to one primary, or does surfacing all four just push the choice onto an unsure customer?</div>
-    <div class="qn"><b>sandbox vs trial = the clock</b>They answer the same fidelity question. Is "does this customer need a deadline?" really the whole basis for choosing between them?</div>
-    <div class="qn"><b>seeded vs own-data</b>Within sandbox: seeded sells the dream, own-data proves the reality. Lead with which, and when do you hydrate?</div>
-  </div></div>
-
+  <div class="sub">Composite 51 → QuickBooks Online Advanced. Five ways to prove it — the analysis picks the right rung for Copperline rather than fanning out the menu.</div>
+  <div class="agent"><div class="a-hd"><span class="glyph">◇</span> Agent · recommend <span class="rr">relevance realized</span></div><div class="a-bd"><div class="insight">Only one objection is live: <b>“will job costing survive.”</b> That’s a fidelity doubt, so of the five motions the <b>own-data sandbox</b> fits; the 30-day trial only wins if they need a deadline (and it puts a card on file).</div><div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>7 objection types → 1 likely</small></div><div class="a-act"><span class="chip primary">Open own-data sandbox</span><span class="chip">Start 30-day trial instead</span><details><summary>why?</summary><ul><li>Pricing: low — preferred pricing covers it.</li><li>Familiarity: medium — desktop EOL reframes it.</li><li>Job-costing: high — 85% dependency; the sandbox settles it with their own file.</li></ul></details></div><div class="meta">Agent ruled out test drive (concept clear) + picked sandbox over trial (no deadline needed). Is that ACC’s call, not the agent’s?</div></div></div>
+  <div class="panel"><div class="hd">Who’s on point · audit trail <span class="tag">real-time ownership</span></div><div class="bd"><div class="two"><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;">Open items — who owns what now</div><div class="own"><span class="rc acc">ACC</span><span class="lbl">Choose the motion</span><span class="st block">open</span></div><div class="own"><span class="rc biz">BIZ</span><span class="lbl">Approve the recommendation</span><span class="st block">waiting</span></div><div class="own"><span class="rc adv">ADV</span><span class="lbl">Stand up environment on approval</span><span class="st done">standby</span></div></div><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;">Audit log — this step</div><div class="log"><span class="t">09:31</span><span class="rc acc">ACC</span><span>engine produced QBOA reco (conf 65%)</span></div><div class="log"><span class="t">09:33</span><span class="rc acc">ACC</span><span>generated comparison PDF</span></div><div class="log"><span class="t">—</span><span class="rc biz">BIZ</span><span>approval pending</span></div><div class="log"><span class="t">—</span><span class="rc adv">ADV</span><span>awaiting go</span></div></div></div><div class="note">Every action is attributed + timestamped; all three parties see one shared record. This is a slice of the full immutable trail.</div></div></div>
+  <div class="panel"><div class="hd">Recommendation</div><div class="bd"><div class="reco"><div class="tier">QuickBooks Online Advanced</div><div class="conf">confidence medium ~65% · single entity · job-cost-led · corroborated by peer benchmark</div></div><div class="two"><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);">What changes (QBDT → QBOA)</div><table style="margin-top:6px;"><thead><tr><th>QBDT today</th><th>QBOA</th></tr></thead><tbody><tr><td>Customer : Job + job costing</td><td>Customers + Projects</td></tr><tr><td>Class (3 divisions)</td><td>Classes / tags</td></tr><tr><td>8 custom reports</td><td>Rebuild (1 WIP = the peer 41% blocker)</td></tr><tr><td>QB Time</td><td>QuickBooks Time (native)</td></tr><tr><td>Payments/AR app</td><td>QBO-native equivalent</td></tr></tbody></table></div><div><div style="font-size:10px;text-transform:uppercase;color:var(--mid);">Why not the neighbours</div><ul class="tight"><li><b>Not QBO Plus:</b> seats + custom reporting + volume push past it.</li><li><b>Not IES:</b> single entity, no 3+ dimensions, no rev-rec — over-buying.</li></ul><div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-top:8px;">Commercial angle</div><div style="font-size:11px;">ProAdvisor preferred pricing fronts the offer (eligible clients up to ~60% off) — accountant leads pricing.</div></div></div></div></div>
+  <div class="panel"><div class="hd">Recommended motion <span class="tag input">five ways to prove QBO Advanced</span></div><div class="bd"><div class="motions five" style="margin-bottom:10px;"><div class="mo"><b>Test drive</b><small>generic sample · a look</small></div><div class="mo"><b>Sandbox · seeded</b><small>verticalized construction data</small></div><div class="mo pick"><b>Sandbox · own-data</b><small>their books · graduates</small></div><div class="mo"><b>30-day trial</b><small>card on file · auto-converts</small></div><div class="mo"><b>Direct purchase</b><small>fit clear — skip proof</small></div></div><table><thead><tr><th>Motion</th><th>Data</th><th>Clock</th><th>Answers</th><th>Graduates?</th><th>Best when</th></tr></thead><tbody><tr><td><b>Test drive</b></td><td>generic sample</td><td>none</td><td>“can I picture it?”</td><td>no</td><td>concept doubt; fastest look</td></tr><tr><td><b>Sandbox · seeded</b></td><td>verticalized sample</td><td>none</td><td>“does it fit MY trade?”</td><td>no</td><td>workflow doubt, no data risk</td></tr><tr><td><b>Sandbox · own-data</b></td><td>their books</td><td>none</td><td>“will MY data survive?”</td><td><b>yes</b></td><td>fidelity doubt; judgment tie-break</td></tr><tr><td><b>30-day trial</b></td><td>their books</td><td>30d + <b>auto-convert</b></td><td>“ready to commit by a date?”</td><td>no — re-import</td><td>fit clear; needs a deadline</td></tr><tr><td><b>Direct purchase</b></td><td>live</td><td>n/a</td><td>none — decided</td><td>is the migration</td><td>fit unambiguous</td></tr></tbody></table><div style="font-size:11px;margin-top:10px;"><b>Sharp distinction:</b> own-data sandbox and the trial answer the same fidelity question — the difference is the <b>clock</b> (and the trial takes a card that <b>auto-charges on day 30 unless cancelled</b>). Sandbox for evidence without pressure; trial when a deadline is what moves them.</div><div style="font-size:11px;margin-top:8px;border-top:1px dotted var(--line);padding-top:8px;"><b>Copperline → own-data sandbox.</b> Fidelity doubt, not concept — test drive is a wasted step; it graduates to production and catches a wrong-tier pre-commit. The <b>30-day trial is the alternative</b> for a procrastinator who needs the deadline, though desktop EOL may supply it.</div></div></div>
+  <div class="panel"><div class="hd">Objections</div><div class="bd"><table><thead><tr><th>Objection</th><th>Response</th></tr></thead><tbody><tr><td>"Will my job costing survive?"</td><td>Exactly what the sandbox proves — their own file, before any commitment or card.</td></tr><tr><td>"Desktop feels faster / familiar"</td><td>Acknowledge; frame against desktop EOL + anywhere-access.</td></tr><tr><td>"Cost vs. my license"</td><td>Lead with preferred pricing; compare total, not sticker.</td></tr></tbody></table><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><a class="wf" href="04-engage.html">Accept → open own-data sandbox</a><select><option>— accept —</option><option>Override → QBO</option><option>Override → IES</option></select><a class="wf alt" href="#">Send comparison to BIZ</a></div></div></div>
+  <div class="panel debate"><div class="hd">Open questions for debate</div><div class="bd"><div class="qn"><b>decision paralysis</b>Five motions is a lot. Does the engine commit to one, or push the choice onto an unsure customer?</div><div class="qn"><b>auto-convert ethics</b>The trial banks a card and charges on day 30 unless cancelled. Trust win (frictionless) or dark pattern? Who is accountable if BIZ forgets?</div><div class="qn"><b>who approves</b>ACC picks the motion but BIZ approves the SKU. What if they disagree — whose call, logged how?</div></div></div>
   <div class="pagenav"><a class="wf alt" href="02-configure.html">← 02 Configure</a><a class="wf" href="04-engage.html">Continue to 04 Engage →</a></div>
 </div>
-</body>
-</html>
+</body></html>
