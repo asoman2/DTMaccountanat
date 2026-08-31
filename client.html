@@ -1,0 +1,527 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Copperline · Client dossier</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
+:root{
+--rail:#0F3529;--rail2:#0B2A20;
+--ink:#393A3D;--muted:#6B6C72;--faint:#9698A0;
+--line:#E3E5E8;--line2:#D4D7DC;--canvas:#FFFFFF;--soft:#F6F7F8;
+--green:#2CA01C;--green-ink:#0E6027;--green-soft:#D6F0DC;--green-fade:#EDF8EE;
+--dark:#0B3D2C;
+--amber:#B26B2C;--amber-soft:#FBF1E4;
+--red:#B23A2E;--red-soft:#FBE9E7;
+--blue:#2563A8;--blue-soft:#E8F0F8;
+--adv:#3B4CC0;--ai:#6D4AFF;--ai-soft:#F1EDFF;
+--r:12px;--r2:8px;
+--sh:0 1px 2px rgba(20,20,25,.05),0 4px 14px rgba(20,20,25,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:"Mulish",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5;color:var(--ink);background:var(--canvas);-webkit-font-smoothing:antialiased;}
+.num{font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+h1{font-size:26px;font-weight:800;letter-spacing:-.015em;line-height:1.15;}
+h2{font-size:16px;font-weight:700;letter-spacing:-.01em;}
+h3{font-size:13.5px;font-weight:700;}
+
+/* ===== shell ===== */
+.shell{display:grid;grid-template-columns:64px 1fr;min-height:100vh;}
+.rail{background:var(--rail);color:#CFE3D6;display:flex;flex-direction:column;align-items:center;padding:10px 0 14px;position:sticky;top:0;height:100vh;gap:2px;}
+.rail .logo{width:44px;height:44px;border-radius:10px;background:var(--rail2);display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;margin-bottom:8px;letter-spacing:.01em;}
+.rail .it{width:56px;padding:8px 0 7px;border-radius:9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;color:#9FC2AE;transition:background .12s;}
+.rail .it svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.rail .it:hover{background:rgba(255,255,255,.07);}
+.rail .it.on{background:rgba(255,255,255,.12);color:#fff;}
+.rail .grow{flex:1;}
+.main{display:flex;flex-direction:column;min-width:0;}
+.topbar{height:56px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 20px;position:sticky;top:0;background:#fff;z-index:30;}
+.topbar .firm{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px;}
+.topbar .firm .car{color:var(--faint);font-size:11px;}
+.topbar .sp{flex:1;}
+.topbar .ic{width:32px;height:32px;border-radius:8px;border:none;background:none;color:var(--muted);display:grid;place-items:center;font-size:15px;}
+.topbar .ic:hover{background:var(--soft);}
+.topbar .me{width:30px;height:30px;border-radius:50%;background:#2E3A36;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;}
+.topbar .aitog{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--ai);background:var(--ai-soft);color:var(--ai);display:grid;place-items:center;font-size:15px;}
+
+.body2{display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:0;flex:1;align-items:start;}
+.content{padding:22px 26px 90px;max-width:960px;width:100%;margin:0 auto;min-width:0;}
+.intel{border-left:1px solid var(--line);position:sticky;top:56px;height:calc(100vh - 56px);display:flex;flex-direction:column;background:#fff;}
+@media(max-width:1180px){.body2{grid-template-columns:1fr;}.intel{position:static;height:auto;border-left:none;border-top:1px solid var(--line);}}
+@media(max-width:820px){.shell{grid-template-columns:1fr;}.rail{display:none;}.content{padding:18px 16px 70px;}}
+
+/* ===== header ===== */
+.back{color:var(--blue);font-size:13px;font-weight:600;display:inline-block;margin-bottom:12px;}
+.back:hover{text-decoration:underline;}
+.chead{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+.chead .idm{flex:1;min-width:260px;}
+.meta{color:var(--muted);font-size:13px;margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.meta .sep{color:var(--line2);}
+.team{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 4px;}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;flex:none;}
+.av.sm{width:24px;height:24px;font-size:10px;}
+.av.dr{background:var(--amber);} .av.mv{background:var(--green-ink);} .av.pn{background:var(--adv);} .av.ai{background:linear-gradient(150deg,var(--ai),#9B6BFF);}
+.person{display:flex;align-items:center;gap:8px;}
+.person .nm{font-size:12.5px;font-weight:700;line-height:1.2;}
+.person .ro{font-size:11px;color:var(--faint);line-height:1.2;}
+.onpt{outline:2px solid var(--blue);outline-offset:2px;}
+.pin{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--blue-soft);border-radius:999px;padding:2px 7px;}
+.viewseg{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px;margin-left:auto;}
+.viewseg button{font-size:12px;font-weight:600;border:none;background:none;color:var(--muted);padding:5px 12px;border-radius:999px;display:flex;align-items:center;gap:6px;transition:background .12s,color .12s;}
+.viewseg button.on{background:var(--ink);color:#fff;}
+.rolebar{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:var(--r2);background:var(--soft);padding:9px 13px;font-size:12.5px;color:var(--muted);margin:12px 0 18px;display:flex;gap:9px;align-items:center;}
+
+/* ===== journey rail ===== */
+.jrail{display:flex;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:14px 12px 10px;margin-bottom:20px;background:#fff;}
+.jseg{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;padding:0 4px;}
+.jseg .ln{position:absolute;top:14px;left:-50%;width:100%;height:2px;background:var(--line2);}
+.jseg:first-child .ln{display:none;}
+.jseg.done .ln,.jseg.on .ln{background:var(--green);}
+.jseg .nd{width:28px;height:28px;border-radius:50%;border:2px solid var(--line2);background:#fff;display:grid;place-items:center;font-size:12px;color:var(--faint);position:relative;z-index:1;transition:transform .18s;font-weight:700;}
+.jseg.done .nd{background:var(--green);border-color:var(--green);color:#fff;}
+.jseg.on .nd{border-color:var(--green);color:var(--green-ink);box-shadow:0 0 0 4px var(--green-soft);}
+a.jseg:hover .nd{transform:translateY(-2px);}
+.jseg .jl{font-size:12px;font-weight:600;color:var(--muted);margin-top:7px;}
+.jseg.on .jl{color:var(--ink);}
+.jseg .js{font-size:10.5px;color:var(--faint);margin-top:2px;min-height:15px;}
+.jseg.on .js{color:var(--blue);font-weight:700;}
+
+/* ===== cards ===== */
+.card{border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:20px;margin-bottom:18px;background:#fff;}
+.card .chd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.hint{color:var(--faint);font-size:12px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;}
+@media(max-width:760px){.grid2{grid-template-columns:1fr;}}
+.grid2 .card{margin-bottom:0;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+@media(max-width:760px){.row2{grid-template-columns:1fr;}}
+
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:4px;padding:3px 9px;}
+.badge.opp{background:var(--green-soft);color:var(--green-ink);text-transform:uppercase;}
+.badge.fit{background:var(--green-fade);color:var(--green-ink);border:1px solid var(--green-soft);}
+.badge.beta{background:var(--green-soft);color:var(--green-ink);font-size:10px;text-transform:uppercase;}
+
+/* hero */
+.hero .sku{display:flex;align-items:center;gap:10px;margin:9px 0 8px;flex-wrap:wrap;}
+.hero .sku .nm{font-size:22px;font-weight:800;letter-spacing:-.01em;}
+.hero p{color:var(--muted);font-size:13.5px;max-width:70ch;}
+.ctas{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center;}
+.btn{border-radius:8px;font-size:13.5px;font-weight:700;padding:9px 16px;border:1.5px solid var(--dark);background:#fff;color:var(--dark);display:inline-flex;align-items:center;gap:7px;transition:background .12s;}
+.btn:hover{background:var(--green-fade);}
+.btn.pri{background:var(--dark);color:#fff;}
+.btn.pri:hover{background:#0E4A36;}
+.btn.lock{border-color:var(--line2);color:var(--faint);background:var(--soft);cursor:not-allowed;}
+.lockwhy{font-size:11.5px;color:var(--faint);}
+.lockwhy b{color:var(--muted);}
+
+/* why bullets */
+.why li{list-style:none;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;gap:9px;}
+.why li:last-child{border-bottom:none;}
+.why b{color:var(--ink);}
+.why .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex:none;margin-top:7px;}
+
+/* readiness */
+.telem{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-top:1px solid var(--line);margin-top:13px;padding-top:12px;}
+.telem .t .k{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);}
+.telem .t .v{font-size:15px;font-weight:800;margin-top:2px;}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px;}
+.chip{font-size:11.5px;font-weight:600;border:1px solid var(--line2);border-radius:999px;padding:4px 11px;color:var(--muted);background:#fff;}
+.chip.good{background:var(--green-fade);border-color:var(--green-soft);color:var(--green-ink);}
+.chip.bad{background:var(--red-soft);border-color:#F3D2CD;color:var(--red);}
+.subp{color:var(--muted);font-size:13px;}
+
+/* feature readiness */
+.fbar{height:10px;border-radius:999px;overflow:hidden;display:flex;background:var(--line);margin:13px 0 14px;}
+.fbar i{display:block;height:100%;width:0;transition:width 1s cubic-bezier(.22,1,.36,1);}
+.fbar .f1{background:var(--green);}.fbar .f2{background:#7AC943;}.fbar .f3{background:#E8842C;}
+.fnums{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.fn .big{font-size:24px;font-weight:800;}
+.fn.g .big{color:var(--green-ink);} .fn.p .big{color:#5E8F1E;} .fn.n .big{color:#B25E1E;}
+.fn .lb{font-size:12px;color:var(--muted);}
+.fn .lb a{color:var(--blue);font-weight:600;}
+
+/* gates mini */
+.gate{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+.gate:last-child{border-bottom:none;}
+.gate .gv{color:var(--green-ink);font-weight:700;font-size:12px;}
+
+/* motions */
+.motions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+@media(max-width:860px){.motions{grid-template-columns:repeat(2,1fr);}}
+.mo{border:1px solid var(--line);border-radius:var(--r2);padding:12px;transition:transform .15s,box-shadow .15s;background:#fff;}
+.mo:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+.mo .mt{font-size:12.5px;font-weight:700;}
+.mo .md{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.mo .tag{display:inline-block;margin-top:8px;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 8px;}
+.mo.pick{border:1.5px solid var(--green);background:var(--green-fade);}
+.mo.pick .tag{background:var(--green);color:#fff;}
+.mo.gated .tag{background:var(--soft);color:var(--faint);border:1px solid var(--line2);}
+
+/* criteria */
+.crit{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.crit:last-child{border-bottom:none;}
+.cb{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line2);display:grid;place-items:center;color:#fff;font-size:11px;flex:none;}
+.cb.on{background:var(--green);border-color:var(--green);}
+.crit .cl{flex:1;}
+.crit small{color:var(--faint);}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;}
+.st.done{background:var(--green-soft);color:var(--green-ink);} .st.act{background:var(--blue-soft);color:var(--blue);} .st.wait{background:var(--amber-soft);color:var(--amber);}
+
+/* economics */
+.econ{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:760px){.econ{grid-template-columns:1fr;}}
+.ec{background:var(--green-fade);border:1px solid var(--green-soft);border-radius:var(--r2);padding:16px 14px;text-align:center;}
+.ec .v{font-size:21px;font-weight:800;color:var(--green-ink);}
+.ec .l{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4;}
+details.assump{margin-top:13px;font-size:12.5px;color:var(--muted);}
+details.assump summary{color:var(--blue);font-weight:700;cursor:pointer;font-size:12.5px;}
+details.assump p{margin-top:8px;max-width:75ch;}
+
+/* guidance */
+.gsec{margin-top:12px;}
+.gsec h3{margin-bottom:6px;}
+.gsec li{list-style:none;font-size:13px;color:var(--muted);padding:5px 0 5px 16px;position:relative;}
+.gsec li::before{content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--faint);}
+.gsec.warn li{color:#8A5A1E;}
+.gsec.warn li::before{background:var(--amber);}
+
+/* lanes */
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:820px){.lanes{grid-template-columns:1fr;}}
+.lane{border:1px solid var(--line);border-radius:var(--r2);padding:13px;transition:opacity .2s;background:#fff;}
+.lane .lh{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.lane .lh .nm{font-size:12.5px;font-weight:700;}
+.lane .lh .ro{font-size:10.5px;color:var(--faint);}
+.task{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;}
+.task .tn{flex:1;}
+.task .tw{font-size:11px;color:var(--faint);white-space:nowrap;}
+body.view-mv .lane:not(.l-mv),body.view-dr .lane:not(.l-dr),body.view-pn .lane:not(.l-pn){opacity:.35;}
+.handoff{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:14px;padding-top:14px;font-size:12.5px;color:var(--muted);flex-wrap:wrap;}
+.handoff .arr{color:var(--faint);}
+.after{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+@media(max-width:760px){.after{grid-template-columns:1fr;}}
+.aft{background:var(--soft);border:1px solid var(--line);border-radius:var(--r2);padding:10px 12px;font-size:12px;color:var(--muted);}
+.aft b{display:block;color:var(--ink);font-size:12.5px;}
+
+/* trail */
+.ev{display:flex;gap:10px;padding:7px 0;font-size:12.5px;align-items:baseline;}
+.ev .tm{color:var(--faint);font-size:11px;min-width:64px;}
+.ev .who2{margin-left:auto;}
+
+/* ===== intelligence panel ===== */
+.ihd{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);}
+.ihd .t{font-weight:800;font-size:14px;}
+.ihd .x{margin-left:auto;color:var(--faint);border:none;background:none;font-size:14px;}
+.ibody{padding:16px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px;}
+.ibody p{font-size:13px;color:var(--ink);}
+.ibody p.mut{color:var(--muted);}
+.iprompts{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+.iprompts button{font-size:12.5px;font-weight:600;color:var(--green-ink);border:1px solid var(--green-soft);background:#fff;border-radius:999px;padding:7px 14px;text-align:right;transition:background .12s;}
+.iprompts button:hover{background:var(--green-fade);}
+.ineed{border:1px solid #E4DEFB;background:var(--ai-soft);border-radius:var(--r2);padding:11px 13px;font-size:12.5px;}
+.ineed b{display:block;margin-bottom:2px;}
+.ineed .cnt{font-size:10.5px;color:var(--ai);font-weight:700;margin-top:7px;}
+.ifoot{padding:12px 16px 14px;border-top:1px solid var(--line);}
+.iask{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:12px;padding:9px 12px;}
+.iask input{flex:1;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--ink);}
+.iask .mic{border:none;background:none;color:var(--muted);font-size:14px;}
+.ifoot .dsc{font-size:10.5px;color:var(--faint);margin-top:9px;line-height:1.45;}
+.ifoot .dsc a{color:var(--blue);}
+
+.rise{opacity:0;transform:translateY(8px);animation:rise .5s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes rise{to{opacity:1;transform:none;}}
+@media(prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none;}.fbar i{transition:none;}*{transition:none!important;}}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+</style></head><body class="view-all">
+<div class="shell">
+
+<nav class="rail" aria-label="Product navigation">
+<div class="logo">ias</div>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>My menu</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Create</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Bookmarks</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+<a class="it on" href="index.html"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19c.7-3 3.2-5 6.2-5s5.5 2 6.2 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.4c2.6.2 4.5 1.9 5.2 4.6"/></svg>Clients</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Work</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>Firm hub</a>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="1.6"/><circle cx="12" cy="6" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="12" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg>Firm books</a>
+<div class="grow"></div>
+<a class="it" href="#"><svg viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg>Customize</a>
+</nav>
+
+<div class="main">
+<header class="topbar">
+<span class="firm">Northgate Advisory <span class="car">▾</span></span>
+<span class="sp"></span>
+<button class="ic" aria-label="Inbox">✉</button>
+<button class="ic" aria-label="Tasks">☰</button>
+<button class="ic" aria-label="Help">?</button>
+<button class="ic" aria-label="Settings">⚙</button>
+<button class="ic" aria-label="Notifications">🔔</button>
+<span class="me">MV</span>
+<button class="aitog" aria-label="Intuit Intelligence">✦</button>
+</header>
+
+<div class="body2">
+<main class="content">
+
+<a class="back" href="index.html">Back to clients</a>
+<div class="chead">
+<div class="idm">
+<h1>Copperline Contracting Co.</h1>
+<div class="meta"><span>Dana Reyes</span><span class="sep">•</span><span>Construction — residential remodel</span><span class="sep">•</span><span>QuickBooks Desktop Premier Contractor ’22</span><span class="sep">•</span><span>Austin, TX</span></div>
+</div>
+</div>
+
+<div class="team">
+<div class="person"><span class="av dr">DR</span><span><span class="nm">Dana Reyes</span><br><span class="ro">Controller · Copperline</span></span></div>
+<div class="person"><span class="av mv onpt">MV</span><span><span class="nm">Marcus Vale <span class="pin">on point</span></span><br><span class="ro">You · Northgate Advisory</span></span></div>
+<div class="person"><span class="av pn">PN</span><span><span class="nm">Priya Nair</span><br><span class="ro">Intuit migration advisor</span></span></div>
+<div class="viewseg" role="tablist" aria-label="Viewing as">
+<button class="on" data-view="all">Everyone</button>
+<button data-view="mv"><span class="av sm mv">MV</span>You</button>
+<button data-view="dr"><span class="av sm dr">DR</span>Dana</button>
+<button data-view="pn"><span class="av sm pn">PN</span>Priya</button>
+</div>
+</div>
+<div class="rolebar" id="rolebar"><span class="av sm mv">MV</span><span id="roletext">Your working view — the full dossier, plus the two decisions still with you: history scope and the entry-freeze note.</span></div>
+
+<nav class="jrail rise" aria-label="Migration journey">
+<a class="jseg done" href="01-profile.html"><span class="ln"></span><span class="nd">✓</span><span class="jl">Profile</span><span class="js">Aug 4–5</span></a>
+<a class="jseg done" href="02-configure.html"><span class="ln"></span><span class="nd">✓</span><span class="jl">Configure</span><span class="js">Composite 51 · no gate</span></a>
+<a class="jseg done" href="03-recommend.html"><span class="ln"></span><span class="nd">✓</span><span class="jl">Recommend</span><span class="js">Own-data sandbox</span></a>
+<a class="jseg on" href="04-engage.html"><span class="ln"></span><span class="nd">04</span><span class="jl">Engage</span><span class="js">4 of 5 criteria met</span></a>
+<a class="jseg" href="05-migrate.html"><span class="ln"></span><span class="nd">05</span><span class="jl">Migrate</span><span class="js">Cutover Aug 31</span></a>
+</nav>
+
+<section class="card hero rise" style="animation-delay:.05s">
+<span class="badge opp">High-fit migration opportunity</span>
+<div class="sku"><span class="nm">QuickBooks Online Advanced</span><span class="badge fit">STRONG · composite 51, no gate</span></div>
+<p>Copperline has outgrown Desktop. Advanced supports their top workflows — job costing, progress invoicing, and purchase orders — with cloud access and the reporting to match. The books are clean, 85% of transactions are job-costed, and seat usage is at 4 of 5: strong signals, corroborated by 66% of similar firms landing on Advanced.</p>
+<div class="ctas">
+<a class="btn pri" href="04-engage.html">Open own-data sandbox</a>
+<button class="btn">Message Dana ▾</button>
+<button class="btn lock" disabled aria-disabled="true">Buy for client 🔒</button>
+<span class="lockwhy"><b>Unlocks at graduation</b> — 1 criterion open (live week ends Friday)</span>
+</div>
+</section>
+
+<section class="card rise" style="animation-delay:.08s">
+<div class="chd"><h2>Why we recommend QuickBooks Online Advanced</h2><a class="hint" href="03-recommend.html" style="color:var(--blue);font-weight:600">View recommendation details</a></div>
+<ul class="why">
+<li><span class="dot"></span><span><b>Job costing</b> — 85% of Copperline’s transactions are job-costed. Projects keeps job profitability live for every user at once: no more single-file access limits, no waiting for someone to close out Desktop to see current numbers.</span></li>
+<li><span class="dot"></span><span><b>Custom reports</b> — 7 of 8 rebuilt in Advanced. The WIP report was the known gap (the blocker for 41% of peer firms); its substitute now matches Desktop and Dana signed it off on Aug 14.</span></li>
+<li><span class="dot"></span><span><b>Field time to job costs</b> — QuickBooks Time reconnects natively, so field hours flow into job costs without re-keying into tracking sheets or waiting on a file hand-off.</span></li>
+</ul>
+</section>
+
+<div class="row2 rise" style="animation-delay:.1s">
+<section class="card">
+<div class="chd"><h2>Accounting readiness</h2><span class="badge fit">STRONG FIT</span></div>
+<p class="subp">Field-service workflows — estimates, progress invoicing, and job-level profitability — map fully to Advanced. Class use is light (12 classes, one level) and translates to divisions cleanly.</p>
+<div class="chips"><span class="chip">Estimates &amp; invoicing</span><span class="chip">Custom fields</span><span class="chip">Price levels</span></div>
+<div class="telem">
+<div class="t"><div class="k">Monthly txns</div><div class="v num">≈ 1,800</div></div>
+<div class="t"><div class="k">Job-costed</div><div class="v num">85%</div></div>
+<div class="t"><div class="k">Classes</div><div class="v num">12 · 1 level</div></div>
+</div>
+</section>
+<section class="card">
+<div class="chd"><h2>Payroll migration readiness</h2><span class="badge fit">STRONG FIT</span></div>
+<p class="subp">Payroll data and configuration migrate with minimal manual work. Assisted payroll is active and running on a consistent schedule, and every employee record is complete.</p>
+<div class="chips"><span class="chip good">Active usage – Assisted Payroll</span></div>
+<div class="telem">
+<div class="t"><div class="k">Active employees</div><div class="v num">14</div></div>
+<div class="t"><div class="k">Last payroll run</div><div class="v num">3 days ago</div></div>
+<div class="t"><div class="k">Records needing fix</div><div class="v num">0</div></div>
+</div>
+</section>
+</div>
+
+<div class="row2 rise" style="animation-delay:.12s">
+<section class="card">
+<div class="chd"><h2>Top used features</h2><span class="hint">from Desktop telemetry</span></div>
+<div class="chips"><span class="chip good">Job costing</span><span class="chip good">Progress invoicing</span><span class="chip good">Purchase orders</span><span class="chip good">QuickBooks Time</span><span class="chip good">Memorized reports</span></div>
+</section>
+<section class="card">
+<div class="chd"><h2>Top detractor features</h2><span class="hint">watch in conversation</span></div>
+<div class="chips"><span class="chip bad">WIP / AIA report</span><span class="chip bad">Fixed Asset Manager</span></div>
+<p class="subp" style="margin-top:10px;font-size:12px">WIP has no native match — the rebuilt substitute is signed off. Fixed Asset Manager is unused in the last 12 months.</p>
+</section>
+</div>
+
+<section class="card rise" style="animation-delay:.14s">
+<div class="chd"><h2>Feature readiness</h2><span class="hint" style="color:var(--green-ink);font-weight:700">20 of 21 workflows supported today (95%)</span></div>
+<div class="fbar" aria-hidden="true"><i class="f1" data-w="71%"></i><i class="f2" data-w="24%"></i><i class="f3" data-w="5%"></i></div>
+<div class="fnums">
+<div class="fn g"><div class="big num">15</div><div class="lb">Fully supported — <a href="03-recommend.html">view details</a></div></div>
+<div class="fn p"><div class="big num">5</div><div class="lb">Partially supported — <a href="03-recommend.html">view details</a></div></div>
+<div class="fn n"><div class="big num">1</div><div class="lb">Not supported — WIP report, substitute rebuilt Aug 14</div></div>
+</div>
+</section>
+
+<div class="row2 rise" style="animation-delay:.16s">
+<section class="card">
+<div class="chd"><h2>Enterprise gates</h2><span class="hint">any gate on → IES</span></div>
+<div class="gate"><span>Multiple entities to consolidate</span><span class="gv">Clear — single LLC</span></div>
+<div class="gate"><span>3+ simultaneous dimensions</span><span class="gv">Clear — class + division</span></div>
+<div class="gate"><span>Revenue recognition / audit close</span><span class="gv">Clear — n/a</span></div>
+<div class="gate"><span>Bolt-on stack acting as an ERP</span><span class="gv">Clear — 2 light apps</span></div>
+<p class="subp" style="margin-top:11px;font-size:12px">No setting Copperline can reach crosses a gate. Only new information — a second entity — would flip this to Enterprise Suite. <a href="02-configure.html" style="color:var(--blue);font-weight:600">Show the math</a></p>
+</section>
+<section class="card">
+<div class="chd"><h2>Graduation criteria</h2><span class="st act">4 of 5 met</span></div>
+<div class="crit"><span class="cb on">✓</span><span class="cl">Opening balances tie out</span><small>Aug 11</small></div>
+<div class="crit"><span class="cb on">✓</span><span class="cl">Job costing reproduced in Projects</span><small>Aug 9</small></div>
+<div class="crit"><span class="cb on">✓</span><span class="cl">Custom reports rebuilt (7 of 8)</span><small>Aug 13</small></div>
+<div class="crit"><span class="cb on">✓</span><span class="cl">WIP substitute signed off by Dana</span><small>Aug 14</small></div>
+<div class="crit"><span class="cb"></span><span class="cl">Team runs a live week <small>· day 4 of 5</small></span><span class="st act">In progress</span></div>
+</section>
+</div>
+
+<section class="card rise" style="animation-delay:.18s">
+<div class="chd"><h2>How this is being proven</h2><span class="hint">no clock — the sandbox is the migration</span></div>
+<div class="motions">
+<div class="mo"><div class="mt">Test drive</div><div class="md">Generic sample data · a quick look</div></div>
+<div class="mo"><div class="mt">Seeded sandbox</div><div class="md">Verticalized construction data</div></div>
+<div class="mo pick"><div class="mt">Own-data sandbox</div><div class="md">Their books · graduates to live</div><span class="tag">Provisioned Aug 7</span></div>
+<div class="mo"><div class="mt">30-day trial</div><div class="md">Card on file · auto-converts</div></div>
+<div class="mo gated"><div class="mt">Direct purchase</div><div class="md">Skip the proof</div><span class="tag">After graduation</span></div>
+</div>
+</section>
+
+<div class="row2 rise" style="animation-delay:.2s">
+<section class="card">
+<div class="chd"><h2>What’s in it for Copperline</h2></div>
+<div class="econ" style="grid-template-columns:1fr">
+<div class="ec"><div class="v">3–5 hrs/mo</div><div class="l">Saved from automated bank feeds and live job-cost tracking</div></div>
+<div class="ec"><div class="v">$9–14K/yr</div><div class="l">Cost avoided from reduced manual reconciliation and rework</div></div>
+<div class="ec"><div class="v">3× faster</div><div class="l">Job-profitability turnaround, from file hand-off to live view</div></div>
+</div>
+</section>
+<section class="card">
+<div class="chd"><h2>What this means to Northgate</h2></div>
+<div class="econ" style="grid-template-columns:1fr">
+<div class="ec"><div class="v">$12–18K/yr</div><div class="l">Advisory retainer potential from live job-cost dashboards replacing manual reports</div></div>
+<div class="ec"><div class="v">4 hrs/mo</div><div class="l">Cleanup time eliminated via auto bank feeds and no file hand-offs</div></div>
+<div class="ec"><div class="v">$1.2–1.6K</div><div class="l">Estimated year-one savings you can present to Copperline</div></div>
+</div>
+</section>
+</div>
+<details class="assump rise" style="animation-delay:.21s;margin:-6px 0 18px 4px"><summary>How these ranges are modeled</summary>
+<p>Modeled from Copperline’s own telemetry — 1,800 transactions a month, 85% job-costed, 4 active seats, 8 custom reports — against peer medians for similar construction firms. Ranges, not promises: they tighten after the live week produces real usage in Advanced, and the dossier will update them before you present.</p></details>
+
+<section class="card rise" style="animation-delay:.22s">
+<div class="chd"><h2>Conversation guidance</h2><span class="hint">how to frame the close with Dana</span></div>
+<div class="gsec"><h3>What to highlight</h3><ul>
+<li>Projects are her Customer:Jobs — same hierarchy, now live for the whole team. Frame it as continuity, not a process loss.</li>
+<li>Field hours already flow into job costs through QuickBooks Time — the part of Desktop her PMs never see now works from the truck.</li>
+</ul></div>
+<div class="gsec warn"><h3>Discuss before cutover</h3><ul>
+<li>History scope is still open — all history vs. two years. It blocks nothing today but must be decided before delta-sync on Aug 30.</li>
+<li>Entry freeze runs Aug 29–31. Agree the window with her site teams so nobody posts into Desktop mid-cutover.</li>
+</ul></div>
+<div class="gsec"><h3>Client-specific talking points</h3><ul>
+<li>The WIP substitute already matches Desktop — Dana confirmed it herself on Aug 14. That objection is closed; don’t reopen it.</li>
+<li>Use the live week as the close: her team has already run a real week in Advanced. Graduation is a confirmation, not a leap.</li>
+</ul></div>
+</section>
+
+<section class="card rise" style="animation-delay:.24s">
+<div class="chd"><h2>Path to conclusion</h2><span class="hint">every remaining task has an owner · use “Viewing as” to focus a lane</span></div>
+<div class="lanes">
+<div class="lane l-mv"><div class="lh"><span class="av sm mv">MV</span><span><span class="nm">Marcus Vale</span><br><span class="ro">You · Northgate</span></span></div>
+<div class="task"><span class="tn">Decide history scope</span><span class="st act">Today</span></div>
+<div class="task"><span class="tn">Send entry-freeze note to Dana</span><span class="tw">by Aug 27</span></div>
+</div>
+<div class="lane l-dr"><div class="lh"><span class="av sm dr">DR</span><span><span class="nm">Dana Reyes</span><br><span class="ro">Copperline</span></span></div>
+<div class="task"><span class="tn">Approve entry freeze</span><span class="st wait">by Aug 29</span></div>
+<div class="task"><span class="tn">Go-live sign-off</span><span class="tw">Aug 31</span></div>
+</div>
+<div class="lane l-pn"><div class="lh"><span class="av sm pn">PN</span><span><span class="nm">Priya Nair</span><br><span class="ro">Intuit advisor</span></span></div>
+<div class="task"><span class="tn">Delta-sync since hydrate</span><span class="tw">Aug 30</span></div>
+<div class="task"><span class="tn">Promote sandbox to production</span><span class="tw">Aug 31</span></div>
+</div>
+</div>
+<div class="handoff"><span class="av sm mv">MV</span><span class="av sm pn">PN</span><span class="arr">→</span><span class="av sm dr">DR</span><span><b>Hand-off Sep 1:</b> Dana owns the live books. Northgate and Intuit move to support.</span></div>
+<div class="after">
+<div class="aft"><b>Parallel run</b>One pay cycle alongside Desktop</div>
+<div class="aft"><b>Rollback window</b>Desktop stays read-only for 60 days</div>
+<div class="aft"><b>Day-30 adoption check</b>Scheduled · Priya + you</div>
+</div>
+</section>
+
+<section class="card rise" style="animation-delay:.26s">
+<div class="chd"><h2>Activity</h2><span class="hint">end-to-end trail</span></div>
+<div class="ev"><span class="tm num">Aug 4</span><span>Pulled Desktop usage snapshot and scored peer benchmarks</span><span class="who2 av sm pn">PN</span></div>
+<div class="ev"><span class="tm num">Aug 6</span><span>Composite 51, no gate — recommended QuickBooks Online Advanced</span><span class="who2 av sm ai">AI</span></div>
+<div class="ev"><span class="tm num">Aug 7</span><span>Dana approved the recommendation · own-data sandbox provisioned</span><span class="who2 av sm dr">DR</span></div>
+<div class="ev"><span class="tm num">Aug 8</span><span>Sandbox hydrated · walkthrough demo with Dana</span><span class="who2 av sm mv">MV</span></div>
+<div class="ev"><span class="tm num">Aug 11</span><span>Live entry started · opening balances tied out</span><span class="who2 av sm dr">DR</span></div>
+<div class="ev"><span class="tm num">Aug 14</span><span>WIP substitute rebuilt and signed off — “that matches now”</span><span class="who2 av sm dr">DR</span></div>
+<div class="ev"><span class="tm num">Aug 18</span><span>Cutover scheduled for month-end</span><span class="who2 av sm pn">PN</span></div>
+<div class="ev"><span class="tm num">Aug 24</span><span>Live week under way · day 4 of 5</span><span class="who2 av sm dr">DR</span></div>
+</section>
+
+</main>
+
+<aside class="intel" aria-label="Intuit Intelligence">
+<div class="ihd"><span class="av sm ai">✦</span><span class="t">Intuit Intelligence</span><span class="badge beta">Beta</span><button class="x" aria-label="Close panel">✕</button></div>
+<div class="ibody">
+<p>Copperline is one criterion from graduation — the live week ends Friday. Cutover is scheduled for Aug 31 and every remaining task has an owner.</p>
+<p class="mut">The only decision still with you is history scope; Dana’s entry-freeze approval is the only client-side ask left.</p>
+<div class="ineed"><b>Needs you now</b>History scope must be decided before delta-sync on Aug 30 — two days of slack left.<div class="cnt">40 items tracked · 2 open · 1 yours</div></div>
+<p class="mut">What do you want to know more about?</p>
+<div class="iprompts">
+<button data-q="Why does Advanced fit Copperline over Enterprise Suite?">Why Advanced over Enterprise Suite?</button>
+<button data-q="What is left before cutover on Aug 31?">What’s left before cutover?</button>
+<button data-q="Draft the entry-freeze note to Dana">Draft the entry-freeze note to Dana</button>
+</div>
+</div>
+<div class="ifoot">
+<div class="iask"><input id="iask" type="text" placeholder="Ask anything" aria-label="Ask Intuit Intelligence"><button class="mic" aria-label="Voice input">🎙</button></div>
+<div class="dsc">Intuit Intelligence can make mistakes. Ranges shown are modeled from client telemetry, not guarantees. <a href="#">How we use AI</a></div>
+</div>
+</aside>
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+  var roles={
+    all:{av:'mv',text:'Your working view — the full dossier, plus the two decisions still with you: history scope and the entry-freeze note.'},
+    mv:{av:'mv',text:'Your lane — decide history scope today and send Dana the entry-freeze note by Aug 27.'},
+    dr:{av:'dr',text:'Dana’s view — sandbox validated, WIP signed off. One ask remains: approve the entry freeze by Aug 29.'},
+    pn:{av:'pn',text:'Priya’s view — delta-sync Aug 30, promote to production Aug 31. Both scheduled, nothing blocked.'}
+  };
+  var seg=document.querySelectorAll('.viewseg button');
+  var roletext=document.getElementById('roletext');
+  var rolebar=document.getElementById('rolebar');
+  seg.forEach(function(b){
+    b.addEventListener('click',function(){
+      seg.forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      var v=b.getAttribute('data-view');
+      document.body.className='view-'+v;
+      roletext.textContent=roles[v].text;
+      var av=rolebar.querySelector('.av');
+      av.className='av sm '+roles[v].av;
+      av.textContent=roles[v].av.toUpperCase();
+    });
+  });
+  // feature readiness bar — single load moment
+  window.addEventListener('load',function(){
+    document.querySelectorAll('.fbar i').forEach(function(i){
+      i.style.width=i.getAttribute('data-w');
+    });
+  });
+  // intelligence prompts fill the ask box
+  var ask=document.getElementById('iask');
+  document.querySelectorAll('.iprompts button').forEach(function(b){
+    b.addEventListener('click',function(){
+      ask.value=b.getAttribute('data-q');
+      ask.focus();
+    });
+  });
+})();
+</script>
+</body></html>
